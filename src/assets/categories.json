@@ -1,0 +1,204 @@
+{
+  "MOVIE": {
+    "section": "Movie",
+    "html_structure": "rows"
+  },
+  "1": {
+    "section": "Movies",
+    "html_structure": "rows",
+    "category": "Action & adventure"
+  },
+  "2": {
+    "section": "Movies",
+    "html_structure": "rows",
+    "category": "Animation"
+  },
+  "40": {
+    "section": "Movies",
+    "html_structure": "rows",
+    "category": "Anime"
+  },
+  "3": {
+    "section": "Movies",
+    "html_structure": "chart",
+    "category": "Classics"
+  },
+  "4": {
+    "section": "Movies",
+    "html_structure": "rows",
+    "category": "Comedy"
+  },
+  "5": {
+    "section": "Movies",
+    "html_structure": "rows",
+    "category": "Crime"
+  },
+  "7": {
+    "section": "Movies",
+    "html_structure": "rows",
+    "category": "Documentary"
+  },
+  "6": {
+    "section": "Movies",
+    "html_structure": "rows",
+    "category": "Drama"
+  },
+  "8": {
+    "section": "Movies",
+    "html_structure": "chart",
+    "category": "Family"
+  },
+  "27": {
+    "section": "Movies",
+    "html_structure": "rows",
+    "category": "Independent"
+  },
+  "18": {
+    "section": "Movies",
+    "html_structure": "rows",
+    "category": "Indian cinema"
+  },
+  "25": {
+    "section": "Movies",
+    "html_structure": "rows",
+    "category": "Music"
+  },
+  "11": {
+    "section": "Movies",
+    "html_structure": "rows",
+    "category": "Mystery & suspense"
+  },
+  "12": {
+    "section": "Movies",
+    "html_structure": "chart",
+    "category": "Romance"
+  },
+  "13": {
+    "section": "Movies",
+    "html_structure": "rows",
+    "category": "Sci-fi & fantasy"
+  },
+  "26": {
+    "section": "Movies",
+    "html_structure": "rows",
+    "category": "Short films"
+  },
+  "15": {
+    "section": "Movies",
+    "html_structure": "rows",
+    "category": "Sports"
+  },
+  "36": {
+    "section": "Movies",
+    "html_structure": "rows",
+    "category": "Thriller"
+  },
+  "9": {
+    "section": "Movies",
+    "html_structure": "chart",
+    "category": "World cinema"
+  },
+  "TV": {
+    "section": "TV",
+    "html_structure": "rows"
+  },
+  "1001": {
+    "section": "TV",
+    "html_structure": "chart",
+    "category": "Action & adventure"
+  },
+  "1002": {
+    "section": "TV",
+    "html_structure": "chart",
+    "category": "Animation"
+  },
+  "1030": {
+    "section": "TV",
+    "html_structure": "chart",
+    "category": "Anime"
+  },
+  "1004": {
+    "section": "TV",
+    "html_structure": "chart",
+    "category": "Comedy"
+  },
+  "1017": {
+    "section": "TV",
+    "html_structure": "chart",
+    "category": "Documentary"
+  },
+  "1005": {
+    "section": "TV",
+    "html_structure": "chart",
+    "category": "Drama"
+  },
+  "1029": {
+    "section": "TV",
+    "html_structure": "chart",
+    "category": "Family"
+  },
+  "1025": {
+    "section": "TV",
+    "html_structure": "chart",
+    "category": "Health & fitness"
+  },
+  "1026": {
+    "section": "TV",
+    "html_structure": "chart",
+    "category": "Learning & education"
+  },
+  "1008": {
+    "section": "TV",
+    "html_structure": "chart",
+    "category": "Reality & game shows"
+  },
+  "1013": {
+    "section": "TV",
+    "html_structure": "chart",
+    "category": "Sports"
+  },
+  "FAMILY": {
+    "section": "Family",
+    "html_structure": "rows"
+  },
+  "3001": {
+    "section": "Family",
+    "html_structure": "chart",
+    "category": "TV"
+  },
+  "2001": {
+    "section": "Family",
+    "html_structure": "chart",
+    "category": "Action & adventure"
+  },
+  "2002": {
+    "section": "Family",
+    "html_structure": "chart",
+    "category": "Animation"
+  },
+  "2003": {
+    "section": "Family",
+    "html_structure": "chart",
+    "category": "Classics"
+  },
+  "2004": {
+    "section": "Family",
+    "html_structure": "chart",
+    "category": "Comedy"
+  },
+  "2007": {
+    "section": "Family",
+    "html_structure": "chart",
+    "category": "Education"
+  },
+  "2005": {
+    "section": "Family",
+    "html_structure": "chart",
+    "category": "Music"
+  },
+  "2006": {
+    "section": "Family",
+    "html_structure": "chart",
+    "category": "Sci-fi & fantasy"
+  }
+}
