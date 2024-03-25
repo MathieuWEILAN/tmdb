@@ -1,13 +1,10 @@
-import Image from "next/image";
 import { Inter } from "next/font/google";
 import type { GetServerSideProps } from "next";
-import Link from "next/link";
-import { Movie, MovieListing, Categories, Genre } from "@/models/types";
+import { MovieListing } from "@/models/types";
 import SliderCategorie from "@/components/SliderCategorie";
 import { createCategory } from "@/lib/utils";
-import Pagination from "@/components/Pagination";
-import { useEffect, useState } from "react";
-import Filter from "@/components/Filter";
+import { useState } from "react";
+import { FilterProvider } from "../contexts/FilterContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,18 +14,35 @@ type PopularProps = {
 
 const PopularPage: React.FC<PopularProps> = ({ popular }) => {
   const [resultsPage, setResultsPage] = useState<MovieListing>(popular);
+  const [contents, setContents] = useState<any>(popular.results);
+  const [page, setPage] = useState<number>(1);
 
   const url = `https://api.themoviedb.org/3/movie/popular?language=en-US`;
 
+  const handlePageClick = async () => {
+    const response = await fetch(`/api/tmdbapi?name=${url}&page=${page + 1}`);
+    const newResponse = await response.json();
+    if (newResponse.results.length === 0) return;
+    setResultsPage(newResponse);
+    setContents([...contents, ...newResponse.results]);
+    setPage(page + 1);
+    return newResponse;
+  };
+
+  console.log("POPULAR", contents, page, resultsPage, popular);
   return (
-    <main
-      className={`flex min-h-screen flex-col justify-between ${inter.className} w-full`}
-    >
-      <section className="mb-8">
-        <SliderCategorie array={resultsPage?.results} />
-        <Pagination infos={popular} setResults={setResultsPage} url={url} />
-      </section>
-    </main>
+    <FilterProvider value={contents}>
+      <main
+        className={`flex min-h-screen flex-col justify-between ${inter.className} w-full`}
+      >
+        <section className="mb-8">
+          <SliderCategorie
+            // arrayContents={contents}
+            handlePageClick={handlePageClick}
+          />
+        </section>
+      </main>
+    </FilterProvider>
   );
 };
 

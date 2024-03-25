@@ -8,7 +8,7 @@ const CardMovie: React.FC<{ movie: Movie }> = ({ movie }) => {
   return (
     <Link
       href={{ pathname: `/film/${movie.id}` }}
-      className="rounded-lg shadow-2xl w-52 h-[400px] my-10 flex flex-col relative cursor-pointer scale-95 hover:scale-100 transition-transform ease-in"
+      className="rounded-lg shadow-xl w-52 h-[400px] flex flex-col relative cursor-pointer scale-95 hover:scale-100 transition-transform ease-in"
     >
       <LikeIcon className="absolute top-[10px] left-[10px]" />
       {movie?.poster_path ? (

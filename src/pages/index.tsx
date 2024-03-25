@@ -29,18 +29,16 @@ const Home: React.FC<HomeProps> = ({
       className={`flex min-h-screen flex-col justify-between ${inter.className} w-full`}
     >
       <section className="mb-10">
-        <h2 className="text-center">Actuellemment à l'affiche</h2>
+        {/* <h2 className="text-center">Actuellemment à l'affiche</h2>
         <SliderCategorie array={nowPlaying.results} />
       </section>
       <section className="mb-10">
-        {" "}
         <h2 className="text-center">Les films les plus populaires</h2>
         <SliderCategorie array={popular.results} />
       </section>
       <section className="mb-10">
-        {" "}
         <h2 className="text-center">Les films les mieux notés</h2>
-        <SliderCategorie array={topRated.results} />
+        <SliderCategorie array={topRated.results} /> */}
       </section>
     </main>
   );

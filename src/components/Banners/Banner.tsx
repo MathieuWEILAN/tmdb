@@ -6,6 +6,8 @@ import Rating from "../Rating";
 import Link from "next/link";
 
 const Banner = ({ movie }: { movie: Movie | null }) => {
+  // const firstMovie = useFirstMovie();
+
   return (
     <div className="banner w-full h-[600px] relative">
       <div className="absolute z-10 h-80 w-96 bg-stone-950 bg-opacity-80 text-white p-6 rounded-xl bottom-[20px] left-[20px] flex flex-col justify-between">
