@@ -1,8 +1,9 @@
 import { AppContext } from "@/contexts/AppContext";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Film } from "@/models/types";
 import Video from "./Video";
 import Image from "next/image";
+import BasicButton from "./Button/BasicButton";
 
 const Modal = () => {
   const { filmSelected, setIsModal, isModal, setCart, cart } =
@@ -16,6 +17,7 @@ const Modal = () => {
     const find = cart.find((item: Film) => item.product_id === film.product_id);
     if (!find) {
       setCart([...cart, film]);
+      localStorage.setItem("cart", JSON.stringify([...cart, film]));
     } else {
       const copyCart = [...cart];
       const newCart = copyCart.filter(
@@ -28,45 +30,52 @@ const Modal = () => {
     (item: Film) => item.product_id === filmSelected?.product_id
   );
 
+  // useEffect(()=>{
+  //   const getItem = localStorage.getItem("cart");
+  //   if(getItem){
+  //     setCart(JSON.parse(getItem))
+  //   }
+  // },[cart])
+
   if (!isModal) return null;
   return (
     <div className="inset-0 fixed bg-stone-700 bg-opacity-80 z-40 flex items-center justify-center w-full h-full top-0 left-0">
       <div className="w-[900px] container h-4/5 bg-black z-50 flex rounded-lg p-10 relative flex-col justify-between">
-        <div className="flex justify-between h-full py-2">
-          <div className="mr-5 h-[350px] flex flex-col justify-between">
-            <div className="h-[280px]">
-              <span className="border-2 py-2.5 px-4 rounded-full my-2.5">
+        <div className="flex justify-between py-2">
+          <div className="mr-5 h-auto flex flex-col justify-between relative">
+            <div className="h-[280px] flex flex-col">
+              <BasicButton className="" onClick={() => console.log("category")}>
                 {filmSelected?.category}
-              </span>
+              </BasicButton>
               <h2 className="text-4xl font-bold">{filmSelected?.title}</h2>
               <span>{filmSelected?.rating}</span>
-              <p className="h-44 overflow-auto no-scrollbar">
+              <p className="h-36 overflow-auto no-scrollbar">
                 {filmSelected?.description}
               </p>
             </div>
 
-            <button
+            <BasicButton
               onClick={() => filmSelected && handleCart(filmSelected)}
-              className="my-5 py-2.5 px-4 rounded-full bg-red-600 w-full hover:slace-105 transition-transform"
+              className="bg-red-600 border-0 py-3 absolute bottom-0 my-0 right-0"
             >
               {checkCard ? "Remove from Cart" : "Add to Cart"}{" "}
               {filmSelected?.price}
-            </button>
+            </BasicButton>
           </div>
           <img
             src={filmSelected?.thumbnail}
             alt={filmSelected?.title}
-            className="h-full object-contain rounded-lg"
+            className="h-[350px] object-contain rounded-lg"
           />
         </div>
         {filmSelected?.video && <Video videoUrl={filmSelected?.video} />}
 
-        <span
+        <BasicButton
           onClick={handleModal}
-          className="absolute right-[30px] top-[20px] rounded-full border-2 p-2.5 cursor-pointer"
+          className="absolute right-[10px] top-0"
         >
           X
-        </span>
+        </BasicButton>
       </div>
     </div>
   );

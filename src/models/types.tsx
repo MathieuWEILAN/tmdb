@@ -1,103 +1,188 @@
-export interface Category {
-  id: number;
-  name: string;
-  image: string;
-  products?: Product[]; // Utilisation de ? pour indiquer que la propriété est optionnelle
-}
-export type CategoriesArray = Category[];
-
-export interface Product {
-  id: number;
-  title: string;
-  price: number;
-  description: string;
-  category: Category;
-  images: string[];
-}
-
-export type ProductsArray = Product[];
-
-// ------------------------- //
-
 export type AppContextType = {
   isModal: boolean;
-  setIsModal: (isModal: boolean) => void;
-  filmSelected: Film | null;
-  setFilmSelected: (film: Film) => void;
-  cart: Film[] | [];
-  setCart: (film: Film[]) => void;
+  // setIsModal: (isModal: boolean) => void;
+  // filmSelected: Film | null;
+  // setFilmSelected: (film: Film) => void;
+  // cart: Film[] | [];
+  // setCart: (film: Film[]) => void;
 };
-
-export interface SerpApiSectionPagination {
-  next: string;
-  section_page_token: string;
+export interface Genre {
+  // Assuming genre_ids is an array of numbers or specific identifiers for genres
+  id: number;
+  name: string; // This could be the genre name if needed, not provided but commonly included
 }
 
-export interface OrganicResult {
+export interface Movie {
+  adult: boolean;
+  backdrop_path: string;
+  genre_ids: Genre[]; // Assuming genre_ids is an array of Genre objects, otherwise, use number[] if it's just IDs
+  id: number;
+  original_language: string;
+  original_title: string;
+  overview: string;
+  popularity: number;
+  poster_path: string;
+  release_date: string; // Assuming ISO 8601 date format (YYYY-MM-DD), consider using Date type if converting to Date object
   title: string;
-  subtitle?: string; // Propriété optionnelle car elle n'est pas présente dans tous les objets
-  serpapi_section_pagination: SerpApiSectionPagination;
-  items: Film[];
+  video: boolean;
+  vote_average: number;
+  vote_count: number;
+  genre_name?: Genre[] | undefined; // Optional property to store the genre name
 }
 
-export interface ApiResponse {
-  organic_results: OrganicResult[];
+export interface Dates {
+  maximum: string; // Date in ISO 8601 format (YYYY-MM-DD), consider using Date type if converting to Date object
+  minimum: string; // Similarly, Date in ISO 8601 format
 }
 
-export interface Film {
-  title: string;
-  link: string;
-  product_id: string;
-  serpapi_link: string;
-  rating: number;
-  video: string;
-  category: string;
-  price: string;
-  extracted_price: number;
-  thumbnail: string;
-  description: string;
+export interface MovieListing {
+  dates?: Dates;
+  page: number;
+  results: Movie[];
+  total_results?: number;
+  total_pages?: number;
 }
 
-export type SearchMetadata = {
+export interface Categories {
+  id: number;
+  name: string;
+}
+
+export interface VideoResult {
+  iso_639_1: string;
+  iso_3166_1: string;
+  name: string;
+  key: string;
+  site: string;
+  size: number;
+  type: string;
+  official: boolean;
+  published_at: string;
   id: string;
+}
+
+export interface VideoResults {
+  id: number;
+  results: VideoResult[];
+}
+
+export interface ProductionCompany {
+  id: number;
+  logo_path: string | null;
+  name: string;
+  origin_country: string;
+}
+
+export interface ProductionCountry {
+  iso_3166_1: string;
+  name: string;
+}
+
+export interface SpokenLanguage {
+  english_name: string;
+  iso_639_1: string;
+  name: string;
+}
+
+export interface MovieDetails {
+  adult: boolean;
+  backdrop_path: string | null;
+  belongs_to_collection: null | object;
+  budget: number;
+  genres: Genre[];
+  homepage: string | null;
+  id: number;
+  imdb_id: string | null;
+  original_language: string;
+  original_title: string;
+  overview: string;
+  popularity: number;
+  poster_path: string | null;
+  production_companies: ProductionCompany[];
+  production_countries: ProductionCountry[];
+  release_date: string;
+  revenue: number;
+  runtime: number | null;
+  spoken_languages: SpokenLanguage[];
   status: string;
-  json_endpoint: string;
+  tagline: string | null;
+  title: string;
+  video: boolean;
+  vote_average: number;
+  vote_count: number;
+}
+
+export interface CastMember {
+  adult: boolean;
+  gender: 1 | 2;
+  id: number;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  popularity: number;
+  profile_path: string;
+  cast_id: number;
+  character: string;
+  credit_id: string;
+  order: number;
+}
+
+export interface CastMemberListing {
+  id: number;
+  cast: CastMember[];
+  crew: CastMember[];
+}
+
+export interface VideoPreview {
+  iso_639_1: string;
+  iso_3166_1: string;
+  name: string;
+  key: string;
+  site: string;
+  size: number;
+  type: string;
+  official: boolean;
+  published_at: string;
+  id: string;
+}
+export interface VideosListing {
+  id: number;
+  results: VideoPreview[];
+}
+
+export interface ImageDetails {
+  aspect_ratio: number;
+  height: number;
+  iso_639_1: string;
+  file_path: string;
+  vote_average: number;
+  vote_count: number;
+  width: number;
+}
+
+export interface ImagesListing {
+  id?: number;
+  backdrops: ImageDetails[];
+}
+
+export interface ReviewsListing {
+  id: number;
+  page: number;
+  results: Review[];
+  total_pages: number;
+  total_results: number;
+}
+export interface Review {
+  author: string;
+  author_details: {
+    name: string;
+    username: string;
+    avatar_path: null | string;
+    rating: number;
+  };
+  content: string;
   created_at: string;
-  processed_at: string;
-  google_play_movies_url: string;
-  raw_html_file: string;
-  total_time_taken: number;
-};
-
-export type SearchParameters = {
-  engine: string;
-  hl: string;
-  gl: string;
-  movies_category: string;
-};
-
-export type ChartOption = {
-  text: string;
-  value: string;
-};
-
-export type SerpapiSectionPagination = {
-  // Complétez avec les propriétés attendues de l'objet
-};
-
-export type Item = {
-  // Complétez avec les propriétés attendues de l'objet
-};
-
-export type SerpapiPagination = {
-  next: string;
-  next_page_token: string;
-};
-
-export type SearchResult = {
-  search_metadata: SearchMetadata;
-  search_parameters: SearchParameters;
-  chart_options: ChartOption[];
-  organic_results: OrganicResult[];
-  serpapi_pagination: SerpapiPagination;
-};
+  id: string;
+  updated_at: string;
+  url: string;
+}

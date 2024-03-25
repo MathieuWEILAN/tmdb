@@ -16,7 +16,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <AppProvider>
           <Header />
           {/* <Navigation /> */}
-          <div className="pt-32 flex min-h-screen flex-col justify-between container mx-auto">
+          <div className="pt-20 flex min-h-screen flex-col justify-between">
             <Component {...pageProps} />
             <Modal />
           </div>

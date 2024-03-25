@@ -1,4 +1,4 @@
-import { GetStaticPaths, GetStaticProps, GetServerSideProps } from "next";
+import { GetServerSideProps } from "next";
 import {
   Film,
   SearchResult,
@@ -6,9 +6,10 @@ import {
   SerpApiSectionPagination,
 } from "@/models/types";
 import { slugify } from "@/lib/utils";
-
+import SliderCategorie from "@/components/SliderCategorie";
 import SectionCategory from "@/components/SectionCategorie";
 import { useEffect, useState } from "react";
+import BasicButton from "@/components/Button/BasicButton";
 
 const SubCategoryPage = ({
   subCategoryData,
@@ -43,7 +44,6 @@ const SubCategoryPage = ({
     ) {
       url.searchParams.delete("section_page_token");
     }
-    console.log("subCat", url.toString());
     const response = await fetch(`/api/serapi?name=${url.toString()}`);
     const newResponse = await response.json();
     const newItems = [...allFilms, ...newResponse.organic_results[0].items];
@@ -53,9 +53,9 @@ const SubCategoryPage = ({
   };
 
   return (
-    <section className="flex flex-col">
+    <section className="flex flex-col items-center">
       <h2 className="text-4xl font-bold mb-5">{title}</h2>
-      <ul className="w-full flex gap-10 flex-wrap">
+      {/* <ul className="w-full flex gap-10 flex-wrap">
         {allFilms.map((film, i) => {
           return (
             <li key={i}>
@@ -75,11 +75,17 @@ const SubCategoryPage = ({
             </li>
           );
         })}
-      </ul>
+      </ul> */}
+      <SliderCategorie
+        array={allFilms}
+        className="w-full flex gap-10 flex-wrap"
+      />
       {isLoading ? (
         <p>Chargement...</p>
       ) : (
-        <button onClick={handlePage}>Voir plus</button>
+        <BasicButton onClick={handlePage} className="my-20">
+          Voir plus
+        </BasicButton>
       )}
     </section>
   );

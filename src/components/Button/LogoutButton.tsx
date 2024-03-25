@@ -14,12 +14,6 @@ const LogoutButton = () => {
   return (
     <div className="flex w-full">
       <div className="flex items-center justify-between">
-        <img
-          src={session?.user?.image}
-          width={50}
-          height={50}
-          className="rounded-full"
-        />
         <span className="ml-4">{session?.user?.name}</span>
       </div>
       <button

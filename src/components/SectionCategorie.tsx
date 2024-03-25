@@ -24,16 +24,12 @@ const SectionCategory = ({
   slug?: string;
 }) => {
   const router = useRouter();
-  const handlePage = async () => {
-    const response = await fetch(`/api/serapi?name=${pagination?.next}`);
-    const newResponse = await response.json();
-  };
 
   return (
     <section className="flex flex-col my-10">
       <h2 className="text-4xl font-bold mb-5">{title}</h2>
       <p>{subtitle}</p>
-      <SliderCategorie array={array} />
+      <SliderCategorie array={array} className={""} />
       {pagination?.next && (
         <Link
           href={{

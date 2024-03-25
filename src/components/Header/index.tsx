@@ -15,18 +15,14 @@ const Header: React.FC = () => {
   const count = cart.length;
 
   return (
-    <header className="h-auto w-full flex items-center justify-between fixed bg-slate-400 shadow-xl z-30 flex-col ">
-      <div className="container mx-auto flex items-center justify-between pt-5">
+    <header className="h-auto w-full flex items-center justify-between fixed bg-slate-400 shadow-xl z-30 flex-col">
+      <div className="container mx-auto flex items-center justify-between py-5 h-full">
         <Link href="/">
           <Image src={NextJSLogo.src} alt="" width={100} height={100} />
         </Link>
+        <Navigation />
         <SearchBar />
-        <div className="border-2 w-10 h-10 flex items-center justify-center">
-          {/* {status === "authenticated" ? <LogoutButton /> : <LoginButton />} */}
-          {count > 0 && count}
-        </div>
       </div>
-      <Navigation />
     </header>
   );
 };
