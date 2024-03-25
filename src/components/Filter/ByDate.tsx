@@ -10,9 +10,12 @@ const ByDate = () => {
   }
 
   return (
-    <div className="flex w-full justify-between">
-      <button onClick={() => sortByDate(SortOrder.ASC)}>Asc</button>
-      <button onClick={() => sortByDate(SortOrder.DESC)}>Desc</button>
+    <div>
+      <span>SORT BY DATE</span>
+      <div className="flex w-full justify-between">
+        <button onClick={() => sortByDate(SortOrder.ASC)}>Asc</button>
+        <button onClick={() => sortByDate(SortOrder.DESC)}>Desc</button>
+      </div>
     </div>
   );
 };

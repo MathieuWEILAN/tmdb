@@ -1,6 +1,6 @@
 import { Inter } from "next/font/google";
 import type { GetServerSideProps } from "next";
-import { MovieListing } from "@/models/types";
+import { MovieListing, Genre } from "@/models/types";
 import SliderCategorie from "@/components/SliderCategorie";
 import { createCategory } from "@/lib/utils";
 import { useState } from "react";
@@ -10,13 +10,13 @@ const inter = Inter({ subsets: ["latin"] });
 
 type PopularProps = {
   popular: MovieListing;
+  categoriesArray: Genre[];
 };
 
-const PopularPage: React.FC<PopularProps> = ({ popular }) => {
+const PopularPage: React.FC<PopularProps> = ({ popular, categoriesArray }) => {
   const [resultsPage, setResultsPage] = useState<MovieListing>(popular);
   const [contents, setContents] = useState<any>(popular.results);
   const [page, setPage] = useState<number>(1);
-
   const url = `https://api.themoviedb.org/3/movie/popular?language=en-US`;
 
   const handlePageClick = async () => {
@@ -29,17 +29,13 @@ const PopularPage: React.FC<PopularProps> = ({ popular }) => {
     return newResponse;
   };
 
-  console.log("POPULAR", contents, page, resultsPage, popular);
   return (
-    <FilterProvider value={contents}>
+    <FilterProvider value={contents} categories={categoriesArray}>
       <main
         className={`flex min-h-screen flex-col justify-between ${inter.className} w-full`}
       >
         <section className="mb-8">
-          <SliderCategorie
-            // arrayContents={contents}
-            handlePageClick={handlePageClick}
-          />
+          <SliderCategorie handlePageClick={handlePageClick} />
         </section>
       </main>
     </FilterProvider>
@@ -58,6 +54,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   };
   let popular;
   let categoriesObj;
+  let categoriesArray;
   try {
     const response1 = await fetch(
       "https://api.themoviedb.org/3/genre/movie/list?language=en",
@@ -73,11 +70,11 @@ export const getServerSideProps: GetServerSideProps = async () => {
     popular = await response3.json();
 
     const categories = categoriesObj?.genres;
-
+    categoriesArray = categoriesObj?.genres;
     popular = createCategory(popular, categories);
   } catch (error) {
     console.log(error);
   }
 
-  return { props: { popular } };
+  return { props: { popular, categoriesArray } };
 };

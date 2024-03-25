@@ -1,5 +1,5 @@
 import { createContext, useState, useContext } from "react";
-import { Movie } from "@/models/types";
+import { Movie, Genre } from "@/models/types";
 
 export const FilterContext = createContext<FilterContextType>(
   {} as FilterContextType
@@ -16,11 +16,16 @@ type FilterContextType = {
   setSortByPopularity?: React.Dispatch<React.SetStateAction<SortOrder>>;
   sortByName?: SortOrder;
   setSortByName?: React.Dispatch<React.SetStateAction<SortOrder>>;
+  filteredRate: React.Dispatch<React.SetStateAction<number[]>>;
+  categoriesArray?: Genre[];
+  sortByCategories: any;
+  filters: Filters;
 };
 
 type FilterProviderProps = {
   children: React.ReactNode;
   value: Movie[];
+  categories: Genre[];
 };
 
 type Filters = {
@@ -31,10 +36,8 @@ type Filters = {
     sort_popularity: SortOrder | null;
     sort_name: SortOrder | null;
   };
-  rate: {
-    start: number | null;
-    finish: number | null;
-  } | null;
+  rate: number[];
+  categories: Genre[];
 };
 
 enum SortOrder {
@@ -45,8 +48,10 @@ enum SortOrder {
 export const FilterProvider: React.FC<FilterProviderProps> = ({
   children,
   value = [],
+  categories = [],
 }) => {
-  /*   const [arrayToDisplay, setArrayToDisplay] = useState<Movie[]>(value); */
+  let arrayToDisplay = value;
+  let categoriesArray = categories;
   const [filters, setFilters] = useState<Filters>({
     sort: {
       sort_date: null,
@@ -55,9 +60,9 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({
       sort_name: null,
     },
     name: null,
-    rate: null,
+    rate: [0, 10],
+    categories: [],
   });
-  let arrayToDisplay = value;
 
   const sortByDate = (order: SortOrder | null) => {
     const newSort = {
@@ -68,7 +73,6 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({
     };
     setFilters({ ...filters, sort: newSort });
   };
-
   const sortByRate = (order: SortOrder | null) => {
     const newSort = {
       sort_date: null,
@@ -78,7 +82,6 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({
     };
     setFilters({ ...filters, sort: newSort });
   };
-
   const sortByPopularity = (order: SortOrder | null) => {
     const newSort = {
       sort_date: null,
@@ -97,6 +100,26 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({
       sort_name: order,
     };
     setFilters({ ...filters, sort: newSort });
+  };
+
+  const filteredRate = (rate: number[]) => {
+    setFilters({ ...filters, rate });
+  };
+
+  const sortByCategories = (cat: Genre) => {
+    if (filters.categories.length === 0) {
+      setFilters({ ...filters, categories: [...filters.categories, cat] });
+    } else {
+      const find = filters.categories.find((c) => c.id === cat.id);
+      if (find) {
+        setFilters({
+          ...filters,
+          categories: filters.categories.filter((c) => c.id !== cat.id),
+        });
+      } else {
+        setFilters({ ...filters, categories: [...filters.categories, cat] });
+      }
+    }
   };
 
   const filterContent = (value: Movie[], filters: Filters) => {
@@ -142,6 +165,28 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({
       });
     }
 
+    if (filters.rate) {
+      arrayToDisplay = value.filter((movie) => {
+        if (
+          movie.vote_average >= filters.rate[0] &&
+          movie.vote_average <= filters.rate[1]
+        ) {
+          return movie;
+        }
+      });
+    }
+
+    if (filters.categories.length > 0) {
+      arrayToDisplay = value.filter((movie) => {
+        const find = filters.categories.find((cat) => {
+          return movie.genre_ids.includes(cat.id);
+        });
+        if (find) {
+          return movie;
+        }
+      });
+    }
+
     return arrayToDisplay;
   };
 
@@ -151,29 +196,20 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({
   };
 
   arrayToDisplay = filterContent(value, filters);
+  console.log("arrayToDisplay", arrayToDisplay, filters);
   arrayToDisplay = removeDuplicates(arrayToDisplay);
-  /*  
-  contenu de filterContent:
-
-  if (filters.sort_date) {
-    arrayToDisplay = value.sort((a, b) => {
-      if (filters.sort_date === SortOrder.ASC) return a.release_date - b.release_date;
-      if (filters.sort_date === SortOrder.DESC) return b.release_date - a.release_date;
-    })
-  } 
-
-  // puis tous les autres if
-
-*/
-
   return (
     <FilterContext.Provider
       value={{
         arrayToDisplay,
+        categoriesArray,
         sortByDate,
         sortByRate,
         sortByPopularity,
         sortByName,
+        filteredRate,
+        sortByCategories,
+        filters,
       }}
     >
       {children}
@@ -189,4 +225,9 @@ export const useFirstMovie = () => {
 export const useContents = () => {
   const { arrayToDisplay } = useContext(FilterContext);
   return arrayToDisplay ? arrayToDisplay : null;
+};
+
+export const useCategories = () => {
+  const { categoriesArray } = useContext(FilterContext);
+  return categoriesArray ? categoriesArray : null;
 };

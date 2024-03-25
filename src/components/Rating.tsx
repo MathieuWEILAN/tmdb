@@ -16,13 +16,13 @@ const Rating = ({
       color = "bg-red-500";
     } else if (rate < 7.5) {
       color = "bg-yellow-400";
-    } else if (rate > 7.5) {
+    } else if (rate >= 7.5) {
       color = "bg-green-500";
     }
-  }
+  } else return;
   return (
     <span
-      className={`w-12 h-12 border-2 rounded-full text-base bg-green-500 flex items-center justify-center font-bold ${color} ${className}`}
+      className={`w-12 h-12 border-2 rounded-full text-base flex items-center  justify-center font-bold ${color} ${className}`}
     >
       {rate && convertToPercentage(rate)}
     </span>
