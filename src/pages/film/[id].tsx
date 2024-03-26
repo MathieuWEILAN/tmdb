@@ -10,6 +10,7 @@ import {
   CastMemberListing,
   ImagesListing,
   VideosListing,
+  Keywords,
 } from "@/models/types";
 import { slugify, createCategory } from "@/lib/utils";
 
@@ -25,6 +26,7 @@ type FilmProps = {
   credits: CastMemberListing;
   images: ImagesListing;
   videos: VideosListing;
+  keywords: Keywords;
 };
 const FilmPage: React.FC<FilmProps> = ({
   movieData,
@@ -34,12 +36,12 @@ const FilmPage: React.FC<FilmProps> = ({
   reviews,
   similar,
   videos,
+  keywords,
 }) => {
   return (
-    <section className="flex flex-col">
+    <section className="flex flex-col h-auto w-full">
       <BannerPageMovie movie={movieData} credits={credits} videos={videos} />
-
-      <div className="flex container mx-auto">
+      <div className="flex container mx-auto overflow-auto">
         {credits.cast.slice(0, 10).map((cast) => {
           return <CardCast key={cast.id} cast={cast} />;
         })}
@@ -70,6 +72,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let reviews;
   let similar;
   let videos;
+  let keywords;
+  let providers;
   try {
     const response = await fetch(url, options);
     const response1 = await fetch(
@@ -102,6 +106,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       options
     );
 
+    const response8 = await fetch(
+      `https://api.themoviedb.org/3/movie/${movieId}/keywords`,
+      options
+    );
+
+    const response9 = await fetch(
+      `https://api.themoviedb.org/3/movie/${movieId}/watch/providers`,
+      options
+    );
+
     movieData = await response.json();
     categoriesObj = await response1.json();
     credits = await response2.json();
@@ -110,6 +124,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     reviews = await response5.json();
     similar = await response6.json();
     videos = await response7.json();
+    keywords = await response8.json();
+    providers = await response9.json();
 
     movieData = createCategory(movieData, categoriesObj.genres);
   } catch (error) {
@@ -124,6 +140,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       reviews,
       similar,
       videos,
+      keywords,
+      providers,
     },
   };
 };

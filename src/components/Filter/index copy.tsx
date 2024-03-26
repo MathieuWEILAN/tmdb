@@ -12,15 +12,13 @@ const Filter: React.FC = () => {
   const handleFilter = () => {
     setIsFilter(!isFilter);
   };
-
   return (
-    <section className="h-auto rounded-xl shadow-2xl w-full lg:w-72 sticky top-[100px] p-4">
+    <section className="w-full lg:w-72 h-auto rounded-xl shadow-xl p-5 space-y-2.5">
       <FilterIcon className="lg:hidden" onClick={handleFilter} />
-
       <div
         className={`${
-          isFilter ? "max-h-screen p-2" : "max-h-0"
-        } lg:block transition-all duration-500 ease-in-out lg:max-h-full overflow-hidden space-y-4`}
+          isFilter ? "max-h-[400px]" : "max-h-0"
+        } lg:block transition-all duration-500 ease-in-out lg:max-h-full overflow-hidden`}
       >
         <ByDate />
         <ByRate />

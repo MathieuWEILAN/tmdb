@@ -55,21 +55,24 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="search-bar relative flex items-center">
+    <div className="search-bar relative flex items-center w-full md:w-fit mt-2.5 md:mt-0">
       {results && isActived && (
         <Link
           href={{ pathname: "/search", query: { search: searchFilm } }}
-          className="absolute right-[70px] hover:underline"
+          className="absolute right-[40px] hover:underline text-xs md:text-sm"
         >
           (Voir les {results.total_results} résultats)
         </Link>
       )}
 
       {!isActived ? (
-        <SearchIcon className="absolute right-[20px]" onClick={handleSearch} />
+        <SearchIcon
+          className="absolute md:left-1/2 md:-translate-x-1/2 right-[20px] cursor-pointer"
+          onClick={handleSearch}
+        />
       ) : (
         <span
-          className="absolute  right-[20px] cursor-pointer"
+          className="absolute right-[20px] cursor-pointer"
           onClick={handleClean}
         >
           X
@@ -88,7 +91,9 @@ const SearchBar = () => {
         value={searchFilm}
         placeholder="Search"
         className={`${
-          isActived ? "w-[500px] bg-white shadow-lg" : "w-0 bg-transparent"
+          isActived
+            ? "md:w-[350px] lg:w-[500px] md:bg-white md:shadow-lg w-full bg-white"
+            : "md:w-0 md:bg-transparent w-full bg-white"
         }  py-2 px-5 rounded-full focus:outline-none transition-all duration-500 ease-in-out focus:ring-2 focus:ring-slate-400 focus:ring-opacity-50 text-slate-950`}
       />
     </div>

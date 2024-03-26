@@ -11,6 +11,10 @@ export interface Genre {
   id: number;
   name: string; // This could be the genre name if needed, not provided but commonly included
 }
+export interface Keywords {
+  id: number;
+  keywords: Genre[];
+}
 
 export interface Movie {
   adult: boolean;

@@ -22,15 +22,15 @@ const SliderCategorie = ({
 
   const data = useContents();
   return (
-    <div className="">
+    <div className="pt-20 md:pt-0">
       {/* <Banner movie={filmSelected} /> */}
-      <div className="flex container mx-auto">
-        <div className="w-72 sticky top-[80px] mt-5">
+      <div className="flex flex-col lg:flex-row container mx-auto relative">
+        <div className="w-full lg:w-72 mt-10">
           <Filter />
         </div>
         <div className="flex-col items-center justify-center">
           <div
-            className={`flex flex-wrap shrink-0 flex-1 w-full justify-center h-auto gap-4 px-8 mt-10`}
+            className={`flex flex-wrap shrink-0 flex-1 w-full justify-center h-auto gap-4 lg:px-8 mt-10`}
           >
             {data?.map((film) => (
               <CardMovie movie={film} key={film.id} />

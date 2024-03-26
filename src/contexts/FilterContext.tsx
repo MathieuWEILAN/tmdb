@@ -166,7 +166,7 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({
     }
 
     if (filters.rate) {
-      arrayToDisplay = value.filter((movie) => {
+      arrayToDisplay = arrayToDisplay.filter((movie) => {
         if (
           movie.vote_average >= filters.rate[0] &&
           movie.vote_average <= filters.rate[1]
@@ -177,13 +177,18 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({
     }
 
     if (filters.categories.length > 0) {
-      arrayToDisplay = value.filter((movie) => {
-        const find = filters.categories.find((cat) => {
-          return movie.genre_ids.includes(cat.id);
-        });
-        if (find) {
-          return movie;
+      arrayToDisplay = arrayToDisplay.filter((movie) => {
+        let hasCat = false;
+        for (let index = 0; index < filters.categories.length; index++) {
+          const element = filters.categories[index];
+          if (movie.genre_ids.includes(element.id)) {
+            hasCat = true;
+          } else {
+            hasCat = false;
+            break;
+          }
         }
+        return hasCat;
       });
     }
 
@@ -196,7 +201,6 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({
   };
 
   arrayToDisplay = filterContent(value, filters);
-  console.log("arrayToDisplay", arrayToDisplay, filters);
   arrayToDisplay = removeDuplicates(arrayToDisplay);
   return (
     <FilterContext.Provider

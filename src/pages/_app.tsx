@@ -7,6 +7,7 @@ import Header from "@/components/Header";
 import Navigation from "@/components/Navigation";
 import Modal from "@/components/Modal";
 import { useContext } from "react";
+import { UserProvider } from "@/contexts/UserContext";
 
 export default function App({ Component, pageProps }: AppProps) {
   const { isModal } = useContext(AppContext);
@@ -14,12 +15,13 @@ export default function App({ Component, pageProps }: AppProps) {
     <SessionProvider session={pageProps.session}>
       <ThemeProvider attribute="class">
         <AppProvider>
-          <Header />
-          {/* <Navigation /> */}
-          <div className="pt-20 flex min-h-screen flex-col justify-between">
-            <Component {...pageProps} />
-            <Modal />
-          </div>
+          <UserProvider>
+            <Header />
+            <div className="md:pt-20 flex min-h-screen flex-col justify-between w-full">
+              <Component {...pageProps} />
+              <Modal />
+            </div>
+          </UserProvider>
         </AppProvider>
       </ThemeProvider>
     </SessionProvider>

@@ -19,7 +19,7 @@ const ByCategories = () => {
               key={category.id}
               name={category.name}
               id={category.id}
-              className={`py-0 text-sm border-stone-950 border font-normal ${
+              className={`py-0 text-sm border-stone-950 border font-normal !border m-1 ${
                 find ? "bg-stone-950 text-white" : "bg-transparent"
               }`}
               onClick={() => sortByCategories(category)}

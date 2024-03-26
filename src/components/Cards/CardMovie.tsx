@@ -8,16 +8,16 @@ const CardMovie: React.FC<{ movie: Movie }> = ({ movie }) => {
   return (
     <Link
       href={{ pathname: `/film/${movie.id}` }}
-      className="rounded-lg shadow-xl w-52 h-[400px] flex flex-col relative cursor-pointer scale-95 hover:scale-100 transition-transform ease-in"
+      className="rounded-lg shadow-xl w-[180px] h-[400px] flex flex-col relative cursor-pointer scale-95 hover:scale-100 transition-transform ease-in"
     >
-      <LikeIcon className="absolute top-[10px] left-[10px]" />
+      <LikeIcon className="absolute top-[10px] left-[10px]" movie={movie} />
       {movie?.poster_path ? (
         <Image
           src={`https://image.tmdb.org/t/p/original${movie?.poster_path}`}
           alt=""
           width={100}
           height={100}
-          className="object-cover object-center h-72 w-full rounded-tl-xl"
+          className="object-contain object-center h-72 w-full rounded-tl-xl"
         />
       ) : (
         <div className="h-72 w-full bg-stone-950 rounded-tl-xl"></div>

@@ -18,7 +18,7 @@ const BannerVideo = ({
   let trailer = videos?.results.find(
     (video) => video.name === "Official Trailer"
   );
-
+  console.log("CLICK VIDEO");
   if (!trailer) {
     trailer = videos?.results[0];
   }
@@ -30,7 +30,7 @@ const BannerVideo = ({
           className="absolute top-[30px] right-[30px] cursor-pointer"
           onClick={() => setIsPlayed(false)}
         />
-        <div className={`h-[720px] w-[1080px]`}>
+        <div className={`h-[300px] md:h-[720px] w-[1080px]`}>
           {isPlayed && trailer && (
             <iframe
               width="560"
