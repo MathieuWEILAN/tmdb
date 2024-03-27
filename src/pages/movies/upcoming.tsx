@@ -1,23 +1,26 @@
 import { Inter } from "next/font/google";
 import type { GetServerSideProps } from "next";
-import { MovieListing, Genre } from "@/models/types";
+import { MovieListing, Genre, TypeOfObj } from "@/models/types";
 import SliderCategorie from "@/components/SliderCategorie";
 import { createCategory } from "@/lib/utils";
 import { useState } from "react";
-import { FilterProvider } from "../contexts/FilterContext";
+import { FilterProvider } from "../../contexts/FilterContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
-type PopularProps = {
-  popular: MovieListing;
+type UpcomingProps = {
+  upcoming: MovieListing;
   categoriesArray: Genre[];
 };
 
-const PopularPage: React.FC<PopularProps> = ({ popular, categoriesArray }) => {
-  const [resultsPage, setResultsPage] = useState<MovieListing>(popular);
-  const [contents, setContents] = useState<any>(popular.results);
+const UpcomingPage: React.FC<UpcomingProps> = ({
+  upcoming,
+  categoriesArray,
+}) => {
+  const [resultsPage, setResultsPage] = useState<MovieListing>(upcoming);
+  const [contents, setContents] = useState<any>(upcoming.results);
   const [page, setPage] = useState<number>(1);
-  const url = `https://api.themoviedb.org/3/movie/popular?language=en-US`;
+  const url = `https://api.themoviedb.org/3/movie/upcoming?language=en-US`;
 
   const handlePageClick = async () => {
     const response = await fetch(`/api/tmdbapi?name=${url}&page=${page + 1}`);
@@ -35,14 +38,17 @@ const PopularPage: React.FC<PopularProps> = ({ popular, categoriesArray }) => {
         className={`flex min-h-screen flex-col justify-between ${inter.className} w-full`}
       >
         <section className="mb-8">
-          <SliderCategorie handlePageClick={handlePageClick} />
+          <SliderCategorie
+            handlePageClick={handlePageClick}
+            type={TypeOfObj.MOVIE}
+          />
         </section>
       </main>
     </FilterProvider>
   );
 };
 
-export default PopularPage;
+export default UpcomingPage;
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const options = {
@@ -52,7 +58,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
       Authorization: `Bearer ${process.env.TMDB_TOKEN}`,
     },
   };
-  let popular;
+  let upcoming;
   let categoriesObj;
   let categoriesArray;
   try {
@@ -62,19 +68,19 @@ export const getServerSideProps: GetServerSideProps = async () => {
     );
 
     const response3 = await fetch(
-      "https://api.themoviedb.org/3/movie/popular?language=en-US&page=1",
+      "https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1",
       options
     );
 
     categoriesObj = await response1.json();
-    popular = await response3.json();
+    upcoming = await response3.json();
 
     const categories = categoriesObj?.genres;
     categoriesArray = categoriesObj?.genres;
-    popular = createCategory(popular, categories);
+    upcoming = createCategory(upcoming, categories);
   } catch (error) {
     console.log(error);
   }
 
-  return { props: { popular, categoriesArray } };
+  return { props: { upcoming, categoriesArray } };
 };

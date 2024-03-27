@@ -11,10 +11,6 @@ import { AppContext } from "@/contexts/AppContext";
 import avatar from "../../assets/img/avatar.png";
 
 const Header: React.FC = () => {
-  const { data: session, status } = useSession();
-  const { cart } = useContext(AppContext);
-  const count = cart.length;
-
   return (
     <header className="h-auto lg:h-20 w-full flex flex-col md:flex-row items-center justify-between fixed bg-slate-400 shadow-xl z-30 flex-col px-4 md:px-0">
       <div className="container mx-auto flex flex-col md:flex-row items-center justify-between py-5 h-full md:space-x-10">

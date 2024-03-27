@@ -1,4 +1,4 @@
-import { Movie } from "@/models/types";
+import { Movie, TypeOfObj } from "@/models/types";
 import { useEffect, useState } from "react";
 import CardMovie from "./Cards/CardMovie";
 import Filter from "./Filter";
@@ -9,10 +9,12 @@ const SliderCategorie = ({
   arrayContents,
   className,
   handlePageClick,
+  type,
 }: {
   arrayContents?: Movie[];
   className?: string;
   handlePageClick: () => void;
+  type: TypeOfObj;
 }) => {
   const [filmSelected, setFilmSelected] = useState<Movie | null>(null);
 
@@ -33,7 +35,7 @@ const SliderCategorie = ({
             className={`flex flex-wrap shrink-0 flex-1 w-full justify-center h-auto gap-4 lg:px-8 mt-10`}
           >
             {data?.map((film) => (
-              <CardMovie movie={film} key={film.id} />
+              <CardMovie movie={film} key={film.id} type={type} />
             ))}
           </div>
 

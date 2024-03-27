@@ -1,15 +1,15 @@
 import { Inter } from "next/font/google";
 import type { GetServerSideProps } from "next";
-import { MovieListing, Genre } from "@/models/types";
+import { TVShowListing, Genre, TypeOfObj } from "@/models/types";
 import SliderCategorie from "@/components/SliderCategorie";
 import { createCategory } from "@/lib/utils";
 import { useState } from "react";
-import { FilterProvider } from "../contexts/FilterContext";
+import { FilterProvider } from "@/contexts/FilterContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
 type TopRatedProps = {
-  top_rated: MovieListing;
+  top_rated: TVShowListing;
   categoriesArray: Genre[];
 };
 
@@ -17,10 +17,10 @@ const TopRatedPage: React.FC<TopRatedProps> = ({
   top_rated,
   categoriesArray,
 }) => {
-  const [resultsPage, setResultsPage] = useState<MovieListing>(top_rated);
+  const [resultsPage, setResultsPage] = useState<TVShowListing>(top_rated);
   const [contents, setContents] = useState<any>(top_rated.results);
   const [page, setPage] = useState<number>(1);
-  const url = `https://api.themoviedb.org/3/movie/top_rated?language=en-US`;
+  const url = `https://api.themoviedb.org/3/tv/top_rated?language=en-US`;
 
   const handlePageClick = async () => {
     const response = await fetch(`/api/tmdbapi?name=${url}&page=${page + 1}`);
@@ -38,7 +38,10 @@ const TopRatedPage: React.FC<TopRatedProps> = ({
         className={`flex min-h-screen flex-col justify-between ${inter.className} w-full`}
       >
         <section className="mb-8">
-          <SliderCategorie handlePageClick={handlePageClick} />
+          <SliderCategorie
+            handlePageClick={handlePageClick}
+            type={TypeOfObj.TV}
+          />
         </section>
       </main>
     </FilterProvider>
@@ -60,12 +63,12 @@ export const getServerSideProps: GetServerSideProps = async () => {
   let categoriesArray;
   try {
     const response1 = await fetch(
-      "https://api.themoviedb.org/3/genre/movie/list?language=en",
+      "https://api.themoviedb.org/3/genre/tv/list?language=en",
       options
     );
 
     const response3 = await fetch(
-      "https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1",
+      "https://api.themoviedb.org/3/tv/top_rated?language=en-US&page=1",
       options
     );
 

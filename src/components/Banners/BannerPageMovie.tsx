@@ -1,4 +1,9 @@
-import { MovieDetails, CastMemberListing, VideosListing } from "@/models/types";
+import {
+  MovieDetails,
+  CastMemberListing,
+  VideosListing,
+  TypeOfObj,
+} from "@/models/types";
 import Image from "next/image";
 import Tag from "../Tag";
 import {
@@ -17,10 +22,12 @@ const BannerPageMovie = ({
   movie,
   credits,
   videos,
+  type,
 }: {
   movie: MovieDetails | null;
   credits: CastMemberListing;
   videos?: VideosListing;
+  type: TypeOfObj;
 }) => {
   const [colorBg, setColorBg] = useState<string>("");
   const [colorText, setColorText] = useState<boolean>(false);
@@ -39,7 +46,7 @@ const BannerPageMovie = ({
         console.log(e);
       });
   }, [movie]);
-
+  console.log(movie);
   return (
     <div
       className={`banner w-full h-auto md:h-[600px] relative md:m-0 ${
@@ -71,10 +78,10 @@ const BannerPageMovie = ({
               alt=""
               width={400}
               height={800}
-              className="w-40 md:w-72 h-64 md:h-full object-cover object-center rounded-xl mx-4"
+              className="w-40 md:w-96 h-64 md:h-full object-cover object-center rounded-xl mx-4"
             />
             {/* PARTIE DROITE */}
-            <div className="w-full mt-4 md:mt-0 px-4 md:px-0 md:pl-10 justify-center space-y-2 md:space-y-4 flex flex-col">
+            <div className="w-full mt-4 md:mt-0 px-4 md:px-0 md:px-5 lg:pl-10 justify-center space-y-2 md:space-y-4 flex flex-col">
               <div className="w-full overflow-auto flex no-scrollbar z-10 md:z-0">
                 {movie?.genres.map((name) => {
                   return (
@@ -91,15 +98,26 @@ const BannerPageMovie = ({
               </div>
               <div className="flex space-x-2.5 items-center md:items-start">
                 <h1 className="text-2xl md:text-[40px] font-bold">
-                  {movie?.title}
+                  {type === TypeOfObj.MOVIE
+                    ? movie?.title
+                    : movie?.original_name}
                 </h1>
-                <span className="text-lg md:text-[40px]">
-                  ({getYear(movie?.release_date)})
-                </span>
+                {type === TypeOfObj.MOVIE && (
+                  <span className="text-lg md:text-[40px]">
+                    {getYear(
+                      type === TypeOfObj.MOVIE
+                        ? movie?.release_date
+                        : movie?.first_air_date
+                    )}
+                  </span>
+                )}
               </div>
               <span className="text-sm">
-                Release date : {movie?.release_date} - Runtime :
-                {convertMinutesToHoursMinutes(movie?.runtime || 0)}
+                Release date :{" "}
+                {type === TypeOfObj.MOVIE
+                  ? movie?.release_date
+                  : movie?.first_air_date}
+                - Runtime :{convertMinutesToHoursMinutes(movie?.runtime || 0)}
               </span>
               <div className="flex items-center">
                 <Rating
@@ -118,7 +136,7 @@ const BannerPageMovie = ({
               <h3 className="text-xl font-bold">Synopsis</h3>
               <p className="">{movie?.overview}</p>
               {movie?.homepage && (
-                <div className="flex flex-col md:flex-row md:items-end md:space-x-2.5">
+                <div className="flex flex-col lg:flex-row lg:items-end lg:space-x-2.5">
                   <h3 className="text-xl font-bold"> Official website :</h3>
                   <a
                     href={movie?.homepage}
