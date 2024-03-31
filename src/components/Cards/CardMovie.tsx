@@ -9,13 +9,12 @@ const CardMovie: React.FC<{ movie: Movie | TVShow; type: TypeOfObj }> = ({
   type,
 }) => {
   const href = `/film/${movie.id}`;
-  console.log("CardMovie", movie);
   return (
     <Link
       href={{
         pathname: `/${type === TypeOfObj.MOVIE ? "film" : "tv"}/${movie.id}`,
       }}
-      className="rounded-lg shadow-xl w-[180px] h-[400px] flex flex-col relative cursor-pointer scale-95 hover:scale-100 transition-transform ease-in"
+      className="rounded-lg box-shadow-2 w-[180px] h-[400px] flex flex-col relative cursor-pointer scale-95 hover:scale-100 transition-transform ease-in bg-zinc-50"
     >
       <LikeIcon className="absolute top-[10px] left-[10px]" movie={movie} />
       {movie?.poster_path ? (
@@ -24,10 +23,10 @@ const CardMovie: React.FC<{ movie: Movie | TVShow; type: TypeOfObj }> = ({
           alt=""
           width={100}
           height={100}
-          className="object-contain object-center h-72 w-full rounded-tl-xl"
+          className="object-contain object-center h-72 w-full rounded-tl-xl rounded-tr-xl bg-black"
         />
       ) : (
-        <div className="h-72 w-full bg-stone-950 rounded-tl-xl"></div>
+        <div className="h-72 w-full bg-stone-950 rounded-tl-xl rounded-tr-xl"></div>
       )}
 
       <div className="h-full w-full py-1 px-2.5 flex flex-col justify-between rounded-br-xl">

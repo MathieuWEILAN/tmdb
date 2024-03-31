@@ -3,12 +3,12 @@ import { useContext } from "react";
 
 const SeeMoreButton = ({ onClick }: { onClick: () => void }) => {
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center w-full px-10">
       <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-5"
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded my-5 w-full"
         onClick={onClick}
       >
-        See more movies
+        See more
       </button>
     </div>
   );

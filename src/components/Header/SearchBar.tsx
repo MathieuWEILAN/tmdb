@@ -23,7 +23,9 @@ const SearchBar = () => {
   };
 
   const fetchData = async () => {
-    let url = `https://api.themoviedb.org/3/search/movie?query=${searchFilm.toLowerCase()}&include_adult=false&language=en-US&page=1`;
+    let url = `https://api.themoviedb.org/3/search/movie?query=${searchFilm.toLowerCase()}&include_adult=false&language=${
+      lang.id
+    }&page=1`;
     const response = await fetch(`/api/tmdbapi?name=${url}`);
     const newResponse = await response.json();
     setResults(newResponse);

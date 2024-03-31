@@ -11,8 +11,8 @@ const RateRange = () => {
     filteredRate(values);
   };
   return (
-    <>
-      <span>RANGE RATE 0-10</span>
+    <div className="w-full flex items-center justify-center flex-col">
+      <span className="text-center w-full">Range rate</span>
       <Range
         step={1}
         min={0}
@@ -25,9 +25,10 @@ const RateRange = () => {
             {...props}
             style={{
               ...props.style,
-              height: "6px",
+              marginTop: "15px",
+              height: "1px",
               width: "100%",
-              backgroundColor: "#ccc",
+              backgroundColor: "#1022FF",
             }}
           >
             {children}
@@ -38,15 +39,15 @@ const RateRange = () => {
             {...props}
             style={{
               ...props.style,
-              height: "15px",
-              width: "15px",
-              backgroundColor: "#999",
+              height: "10px",
+              width: "10px",
+              backgroundColor: "#1022FF",
               borderRadius: "50%",
             }}
           />
         )}
       />
-    </>
+    </div>
   );
 };
 

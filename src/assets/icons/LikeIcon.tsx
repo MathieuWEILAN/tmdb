@@ -17,7 +17,6 @@ const LikeIcon = ({
     setIsLiked(!isLiked);
     handleFavorite(movie);
   };
-  console.log("MOVIE", movie);
   const checkIsLiked = () => {
     const find = favorites.find((f) => f.id === movie?.id);
     return find ? true : false;

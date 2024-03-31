@@ -1,10 +1,10 @@
 import type { GetServerSideProps } from "next";
 import { createCategory } from "@/lib/utils";
-import { MovieListing, Movie } from "@/models/types";
+import { MovieListing, Movie, TypeOfObj } from "@/models/types";
 import Pagination from "@/components/Pagination";
 import { useEffect, useState } from "react";
 import CardMovie from "@/components/Cards/CardMovie";
-
+import SeeMoreButton from "@/components/Button/SeeMoreButton";
 type SearchProps = {
   results: MovieListing;
   query: string;
@@ -17,20 +17,32 @@ const SearchPage: React.FC<SearchProps> = ({ results, query }) => {
   useEffect(() => {
     setResultsPage(results);
   }, [results]);
-  const url = `https://api.themoviedb.org/3/search/movie?query=${query.toLowerCase()}&include_adult=false&language=en-US`;
+  const url = `https://api.themoviedb.org/3/search/movie?query=${query.toLowerCase()}&include_adult=false&language=${
+    lang.id
+  }`;
+
+  console.log(resultsPage);
   return (
-    <section>
-      <h2 className="my-5">
-        Votre recherche : <q className="font-normal">{query}</q>
+    <section className="container mx-auto">
+      <h2 className="my-10">
+        Votre recherche : <q className="font-normal">{query}</q>{" "}
+        <span className="italic font-normal text-2xl">
+          ({resultsPage?.total_results} Résultats trouvés)
+        </span>
       </h2>
-      <span className="text-2xl">
-        {resultsPage?.total_results} Résultats trouvés
-      </span>
+
       <div className="flex flex-wrap w-full gap-5 justify-start">
         {resultsPage?.results.map((movie: Movie, index: number) => {
-          return <CardMovie key={movie.id} movie={movie} />;
+          return (
+            <CardMovie
+              key={movie.id}
+              movie={movie}
+              type={movie.title ? TypeOfObj.MOVIE : TypeOfObj.TV}
+            />
+          );
         })}
       </div>
+
       <Pagination
         infos={results}
         query={query}
@@ -54,7 +66,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let categoriesObj;
   let results;
   try {
-    let url = `https://api.themoviedb.org/3/search/movie?query=${query.toLowerCase()}&include_adult=false&language=en-US&page=1`;
+    let url = `https://api.themoviedb.org/3/search/movie?query=${query.toLowerCase()}&include_adult=false&language=${
+      lang.id
+    }&page=1`;
 
     const response = await fetch(url, options);
 

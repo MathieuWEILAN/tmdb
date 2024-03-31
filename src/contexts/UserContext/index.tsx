@@ -23,10 +23,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     } else {
       setFavorites([...favorites, film]);
     }
-    console.log("Favorites", favorites);
   };
-
-  console.log("Favorites", favorites);
 
   return (
     <UserContext.Provider value={{ handleFavorite, favorites }}>

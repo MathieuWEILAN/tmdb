@@ -8,7 +8,7 @@ const CardCast = ({ cast }: { cast: CastMember }) => {
   return (
     <Link
       href={{ pathname: `/film/${cast.id}` }}
-      className="rounded-lg shadow-2xl w-32 h-auto max-h-[300px] my-10 flex flex-col relative cursor-pointer scale-95 hover:scale-100 transition-transform ease-in"
+      className="shrink-0 rounded-lg box-shadow-2 w-32 h-auto max-h-[300px] my-5 flex flex-col relative cursor-pointer scale-95 hover:scale-100 transition-transform ease-in"
     >
       <LikeIcon className="absolute top-[10px] left-[10px]" />
       {cast?.profile_path ? (

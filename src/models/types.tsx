@@ -1,20 +1,30 @@
-export type AppContextType = {
-  isModal: boolean;
-  // setIsModal: (isModal: boolean) => void;
-  // filmSelected: Film | null;
-  // setFilmSelected: (film: Film) => void;
-  // cart: Film[] | [];
-  // setCart: (film: Film[]) => void;
-};
 export interface Genre {
   // Assuming genre_ids is an array of numbers or specific identifiers for genres
   id: number;
   name: string; // This could be the genre name if needed, not provided but commonly included
 }
-export interface Keywords {
+export interface KeywordsType {
   id: number;
   keywords: Genre[];
 }
+
+export type AuthorDetails = {
+  avatar_path: string;
+  name: string;
+  rating: number;
+  username: string;
+};
+
+export type ReviewType = {
+  author: string;
+  author_details: AuthorDetails;
+  content: string;
+  created_at: string;
+  id: string;
+  updated_at: string;
+  url: string;
+};
+
 export interface TVShowListing {
   page: number;
   results: TVShow[];
@@ -122,10 +132,30 @@ export interface TVShowDetails {
   vote_count: number;
 }
 
+export interface VideoPreview {
+  id: string;
+  iso_639_1: string;
+  iso_3166_1: string;
+  key: string;
+  name: string;
+  site: string;
+  size: number;
+  type: string;
+}
+
+export type SocialMediasType = {
+  id: number;
+  imdb_id: string;
+  wikidata_id: string;
+  facebook_id: string;
+  instagram_id: string;
+  twitter_id: string;
+};
+
 export interface Movie {
   adult: boolean;
   backdrop_path: string;
-  genre_ids: Genre[]; // Assuming genre_ids is an array of Genre objects, otherwise, use number[] if it's just IDs
+  genre_ids?: Genre[]; // Assuming genre_ids is an array of Genre objects, otherwise, use number[] if it's just IDs
   id: number;
   original_language: string;
   original_title: string;
@@ -135,6 +165,7 @@ export interface Movie {
   release_date: string; // Assuming ISO 8601 date format (YYYY-MM-DD), consider using Date type if converting to Date object
   title: string;
   video: boolean;
+  media_type?: string;
   vote_average: number;
   vote_count: number;
   genre_name?: Genre[] | undefined; // Optional property to store the genre name
@@ -198,6 +229,15 @@ export interface SpokenLanguage {
   name: string;
 }
 
+export type MovieCollection = {
+  id: number;
+  name: string;
+  overview: string;
+  poster_path: string;
+  backdrop_path: string;
+  parts: Movie[];
+};
+
 export interface MovieDetails {
   adult: boolean;
   backdrop_path: string | null;
@@ -241,10 +281,24 @@ export interface CastMember {
   order: number;
 }
 
+export interface CrewMember {
+  adult: boolean;
+  credit_id: string;
+  department: string;
+  gender: number;
+  id: number;
+  job: string;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  popularity: number;
+  profile_path: string;
+}
+
 export interface CastMemberListing {
   id: number;
   cast: CastMember[];
-  crew: CastMember[];
+  crew: CrewMember[];
 }
 
 export interface VideoPreview {
@@ -282,21 +336,7 @@ export interface ImagesListing {
 export interface ReviewsListing {
   id: number;
   page: number;
-  results: Review[];
+  results: ReviewType[];
   total_pages: number;
   total_results: number;
-}
-export interface Review {
-  author: string;
-  author_details: {
-    name: string;
-    username: string;
-    avatar_path: null | string;
-    rating: number;
-  };
-  content: string;
-  created_at: string;
-  id: string;
-  updated_at: string;
-  url: string;
 }

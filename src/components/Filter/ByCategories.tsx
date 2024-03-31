@@ -1,7 +1,6 @@
 import { FilterContext, useCategories } from "@/contexts/FilterContext";
 import Tag from "../Tag";
 import { useContext } from "react";
-import { Genre } from "@/models/types";
 
 const ByCategories = () => {
   const allCategories = useCategories();
@@ -10,7 +9,7 @@ const ByCategories = () => {
 
   return (
     <div>
-      <span>ALL CATEGORIES</span>
+      <span>Categories</span>
       <div className="flex flex-wrap">
         {allCategories?.map((category) => {
           const find = filtersCategories.find((cat) => cat.id === category.id);
@@ -19,7 +18,7 @@ const ByCategories = () => {
               key={category.id}
               name={category.name}
               id={category.id}
-              className={`py-0 text-sm border-stone-950 border font-normal !border m-1 ${
+              className={`py-1 text-sm font-normal box-shadow-2 !border-0 m-1 ${
                 find ? "bg-stone-950 text-white" : "bg-transparent"
               }`}
               onClick={() => sortByCategories(category)}

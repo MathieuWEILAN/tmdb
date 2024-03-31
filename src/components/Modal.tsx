@@ -26,9 +26,9 @@ const Modal = () => {
       setCart(newCart);
     }
   };
-  const checkCard = cart.find(
-    (item: Film) => item.product_id === filmSelected?.product_id
-  );
+  // const checkCard = cart.find(
+  //   (item: Film) => item.product_id === filmSelected?.product_id
+  // );
 
   // useEffect(()=>{
   //   const getItem = localStorage.getItem("cart");

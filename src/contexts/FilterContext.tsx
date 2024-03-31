@@ -1,5 +1,5 @@
 import { createContext, useState, useContext } from "react";
-import { Movie, Genre } from "@/models/types";
+import { Movie, Genre, TVShow } from "@/models/types";
 
 export const FilterContext = createContext<FilterContextType>(
   {} as FilterContextType
@@ -8,8 +8,8 @@ export const FilterContext = createContext<FilterContextType>(
 type FilterContextType = {
   sortByDate?: SortOrder;
   setSortByDate?: React.Dispatch<React.SetStateAction<SortOrder>>;
-  arrayToDisplay?: Movie[];
-  setArrayToDisplay?: React.Dispatch<React.SetStateAction<Movie[]>>;
+  arrayToDisplay?: Movie[] | TVShow[];
+  setArrayToDisplay?: React.Dispatch<React.SetStateAction<Movie[] | TVShow[]>>;
   sortByRate?: SortOrder;
   setSortByRate?: React.Dispatch<React.SetStateAction<SortOrder>>;
   sortByPopularity?: SortOrder;
@@ -20,11 +20,12 @@ type FilterContextType = {
   categoriesArray?: Genre[];
   sortByCategories: any;
   filters: Filters;
+  filterByYears: any;
 };
 
 type FilterProviderProps = {
   children: React.ReactNode;
-  value: Movie[];
+  value: Movie[] | TVShow[];
   categories: Genre[];
 };
 
@@ -38,6 +39,7 @@ type Filters = {
   };
   rate: number[];
   categories: Genre[];
+  years: { start: number; end: number } | null;
 };
 
 enum SortOrder {
@@ -62,6 +64,7 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({
     name: null,
     rate: [0, 10],
     categories: [],
+    years: { start: 1900, end: new Date().getFullYear() },
   });
 
   const sortByDate = (order: SortOrder | null) => {
@@ -122,18 +125,35 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({
     }
   };
 
+  const filterByYears = (years: { start: number; end: number }) => {
+    setFilters({ ...filters, years });
+  };
+
   const filterContent = (value: Movie[], filters: Filters) => {
     if (filters.sort.sort_date) {
       arrayToDisplay = value.sort((a, b) => {
-        if (filters.sort.sort_date === SortOrder.ASC) {
-          let dateA = new Date(a.release_date);
-          let dateB = new Date(b.release_date);
-          return dateA - dateB;
-        }
-        if (filters.sort.sort_date === SortOrder.DESC) {
-          let dateA = new Date(a.release_date);
-          let dateB = new Date(b.release_date);
-          return dateB - dateA;
+        if (a.release_date) {
+          if (filters.sort.sort_date === SortOrder.ASC) {
+            let dateA = new Date(a.release_date);
+            let dateB = new Date(b.release_date);
+            return dateA - dateB;
+          }
+          if (filters.sort.sort_date === SortOrder.DESC) {
+            let dateA = new Date(a.release_date);
+            let dateB = new Date(b.release_date);
+            return dateB - dateA;
+          }
+        } else {
+          if (filters.sort.sort_date === SortOrder.ASC) {
+            let dateA = new Date(a.first_air_date);
+            let dateB = new Date(b.first_air_date);
+            return dateA - dateB;
+          }
+          if (filters.sort.sort_date === SortOrder.DESC) {
+            let dateA = new Date(a.first_air_date);
+            let dateB = new Date(b.first_air_date);
+            return dateB - dateA;
+          }
         }
       });
     }
@@ -158,10 +178,17 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({
 
     if (filters.sort.sort_name) {
       arrayToDisplay = value.sort((a, b) => {
-        if (filters.sort.sort_name === SortOrder.ASC)
-          return a.title.localeCompare(b.title);
-        if (filters.sort.sort_name === SortOrder.DESC)
-          return b.title.localeCompare(a.title);
+        if (a?.title) {
+          if (filters.sort.sort_name === SortOrder.ASC)
+            return a?.title.localeCompare(b.title);
+          if (filters.sort.sort_name === SortOrder.DESC)
+            return b.title.localeCompare(a.title);
+        } else {
+          if (filters.sort.sort_name === SortOrder.ASC)
+            return a?.name.localeCompare(b.name);
+          if (filters.sort.sort_name === SortOrder.DESC)
+            return b.name.localeCompare(a.name);
+        }
       });
     }
 
@@ -192,6 +219,21 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({
       });
     }
 
+    if (filters.years) {
+      console.log(arrayToDisplay[0]);
+      arrayToDisplay = arrayToDisplay.filter((movie) => {
+        let releaseYear = movie.release_date
+          ? Number(movie.release_date.split("-")[0])
+          : Number(movie?.first_air_date.split("-")[0]);
+        if (
+          releaseYear >= filters.years.start &&
+          releaseYear <= filters.years.end
+        ) {
+          return movie;
+        }
+      });
+    }
+
     return arrayToDisplay;
   };
 
@@ -213,6 +255,7 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({
         sortByName,
         filteredRate,
         sortByCategories,
+        filterByYears,
         filters,
       }}
     >

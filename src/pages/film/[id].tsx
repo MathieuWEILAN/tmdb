@@ -2,7 +2,13 @@ import { GetServerSideProps } from "next";
 import CardCast from "@/components/Cards/CardCast";
 import BannerVideo from "@/components/Banners/BannerVideo";
 import BannerPageMovie from "@/components/Banners/BannerPageMovie";
+import Similar from "@/components/Similar";
+import SocialMedias from "@/components/SocialMedias";
+import Keywords from "@/components/Keywords";
+import Collections from "@/components/Collections";
+
 import {
+  CrewMember,
   TypeOfObj,
   Movie,
   MovieDetails,
@@ -11,13 +17,18 @@ import {
   CastMemberListing,
   ImagesListing,
   VideosListing,
-  Keywords,
+  KeywordsType,
+  Providers,
+  SocialMediasType,
+  MovieCollection,
 } from "@/models/types";
 import { slugify, createCategory } from "@/lib/utils";
+import Media from "@/components/Medias";
 
 import SectionCategory from "@/components/SectionCategorie";
 import React from "react";
 import Image from "next/image";
+import Reviews from "@/components/Reviews";
 
 type FilmProps = {
   movieData: MovieDetails;
@@ -27,7 +38,10 @@ type FilmProps = {
   credits: CastMemberListing;
   images: ImagesListing;
   videos: VideosListing;
-  keywords: Keywords;
+  keywords: KeywordsType;
+  providers: Providers;
+  socials: SocialMediasType;
+  movieCollection: MovieCollection;
 };
 const FilmPage: React.FC<FilmProps> = ({
   movieData,
@@ -38,19 +52,53 @@ const FilmPage: React.FC<FilmProps> = ({
   similar,
   videos,
   keywords,
+  socials,
+  movieCollection,
 }) => {
+  const { crew, cast } = credits;
+  console.log("DETAILS", movieCollection);
   return (
     <section className="flex flex-col h-auto w-full">
       <BannerPageMovie
         movie={movieData}
         credits={credits}
         videos={videos}
-        type={TypeOfObj.TV}
+        type={!movieData.title ? TypeOfObj.TV : TypeOfObj.MOVIE}
+        crew={crew}
+        cast={cast}
       />
-      <div className="flex container mx-auto overflow-auto">
-        {credits.cast.slice(0, 10).map((cast) => {
-          return <CardCast key={cast.id} cast={cast} />;
-        })}
+      <div className="flex flex-col  lg:flex-row container mx-auto px-5">
+        <div className="flex flex-col w-full lg:w-4/5 order-2 lg:order-1 lg:pr-5">
+          <div className="my-10">
+            <h2>Casting</h2>
+            <div className="mx-auto w-full flex flex-nowrap overflow-auto no-scrollbar">
+              {" "}
+              {credits.cast.slice(0, 10).map((cast) => {
+                return <CardCast key={cast.id} cast={cast} />;
+              })}
+            </div>
+          </div>
+          {videos.results.length > 0 && (
+            <Media videos={videos} images={images} />
+          )}
+
+          {similar?.results.length > 0 && <Similar similars={similar} />}
+          {reviews.results.length > 0 && <Reviews {...reviews} />}
+          {movieCollection && <Collections {...movieCollection} />}
+        </div>
+
+        <aside className="order-1 lg:order-2 w-full lg:w-1/5 p-5 my-10 border-2 rounded-xl box-shadow-2 h-auto">
+          {socials && <SocialMedias {...socials} />}
+          <>
+            <h3 className="font-bold mt-5">Realese date :</h3>
+            <p>{movieData.release_date}</p>
+            <h3 className="font-bold mt-5">Revenue :</h3>
+            <p>{movieData.revenue.toLocaleString("en-US")} $</p>
+            <h3 className="font-bold mt-5">Budget :</h3>
+            <p>{movieData.budget.toLocaleString("en-US")} $</p>
+          </>
+          <Keywords {...keywords} />
+        </aside>
       </div>
     </section>
   );
@@ -80,6 +128,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let videos;
   let keywords;
   let providers;
+  let socials;
+  let movieCollection;
   try {
     const response = await fetch(url, options);
     const response1 = await fetch(
@@ -122,6 +172,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       options
     );
 
+    const response10 = await fetch(
+      `https://api.themoviedb.org/3/movie/${movieId}/external_ids`,
+      options
+    );
+
     movieData = await response.json();
     categoriesObj = await response1.json();
     credits = await response2.json();
@@ -132,11 +187,22 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     videos = await response7.json();
     keywords = await response8.json();
     providers = await response9.json();
+    socials = await response10.json();
+
+    if (movieData?.belongs_to_collection) {
+      const response11 = await fetch(
+        `https://api.themoviedb.org/3/collection/${movieData.belongs_to_collection.id}?language=en-US`,
+        options
+      );
+      movieCollection = await response11.json();
+      console.log("COLLECTION", movieCollection);
+    }
 
     movieData = createCategory(movieData, categoriesObj.genres);
   } catch (error) {
     console.log(error);
   }
+
   return {
     props: {
       movieData,
@@ -148,6 +214,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       videos,
       keywords,
       providers,
+      socials,
+      movieCollection,
     },
   };
 };

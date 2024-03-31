@@ -60,3 +60,16 @@ export const convertMinutesToHoursMinutes = (minutes: number) => {
   const minutesLeft = minutes % 60;
   return `${hours}h${minutesLeft}`;
 };
+
+export const formaterDate = (dateISO: string) => {
+  const options = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  };
+  const date = new Date(dateISO);
+  const dateFormatee = new Intl.DateTimeFormat("en-US", options).format(date);
+  return dateFormatee;
+};
