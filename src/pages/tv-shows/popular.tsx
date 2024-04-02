@@ -11,13 +11,18 @@ const inter = Inter({ subsets: ["latin"] });
 type PopularProps = {
   popular: TVShowListing;
   categoriesArray: Genre[];
+  locale: string;
 };
 
-const PopularPage: React.FC<PopularProps> = ({ popular, categoriesArray }) => {
+const PopularPage: React.FC<PopularProps> = ({
+  popular,
+  categoriesArray,
+  locale,
+}) => {
   const [resultsPage, setResultsPage] = useState<TVShowListing>(popular);
   const [contents, setContents] = useState<any>(popular.results);
   const [page, setPage] = useState<number>(1);
-  const url = `https://api.themoviedb.org/3/tv/popular?language=en-US`;
+  const url = `https://api.themoviedb.org/3/tv/popular?language=${locale}`;
 
   const handlePageClick = async () => {
     const response = await fetch(`/api/tmdbapi?name=${url}&page=${page + 1}`);
@@ -47,7 +52,7 @@ const PopularPage: React.FC<PopularProps> = ({ popular, categoriesArray }) => {
 
 export default PopularPage;
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   const options = {
     method: "GET",
     headers: {
@@ -60,12 +65,12 @@ export const getServerSideProps: GetServerSideProps = async () => {
   let categoriesArray;
   try {
     const response1 = await fetch(
-      "https://api.themoviedb.org/3/genre/tv/list?language=en",
+      `https://api.themoviedb.org/3/genre/tv/list?language=${locale}`,
       options
     );
 
     const response3 = await fetch(
-      "https://api.themoviedb.org/3/tv/popular?language=en-US&page=1",
+      `https://api.themoviedb.org/3/tv/popular?language=${locale}&page=1`,
       options
     );
 
@@ -79,5 +84,5 @@ export const getServerSideProps: GetServerSideProps = async () => {
     console.log(error);
   }
 
-  return { props: { popular, categoriesArray } };
+  return { props: { popular, categoriesArray, locale } };
 };

@@ -11,16 +11,18 @@ const inter = Inter({ subsets: ["latin"] });
 type TopRatedProps = {
   top_rated: TVShowListing;
   categoriesArray: Genre[];
+  locale: string;
 };
 
 const TopRatedPage: React.FC<TopRatedProps> = ({
   top_rated,
   categoriesArray,
+  locale,
 }) => {
   const [resultsPage, setResultsPage] = useState<TVShowListing>(top_rated);
   const [contents, setContents] = useState<any>(top_rated.results);
   const [page, setPage] = useState<number>(1);
-  const url = `https://api.themoviedb.org/3/tv/top_rated?language=en-US`;
+  const url = `https://api.themoviedb.org/3/tv/top_rated?language=${locale}`;
 
   const handlePageClick = async () => {
     const response = await fetch(`/api/tmdbapi?name=${url}&page=${page + 1}`);
@@ -50,7 +52,7 @@ const TopRatedPage: React.FC<TopRatedProps> = ({
 
 export default TopRatedPage;
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   const options = {
     method: "GET",
     headers: {
@@ -63,12 +65,12 @@ export const getServerSideProps: GetServerSideProps = async () => {
   let categoriesArray;
   try {
     const response1 = await fetch(
-      "https://api.themoviedb.org/3/genre/tv/list?language=en",
+      `https://api.themoviedb.org/3/genre/tv/list?language=${locale}`,
       options
     );
 
     const response3 = await fetch(
-      "https://api.themoviedb.org/3/tv/top_rated?language=en-US&page=1",
+      `https://api.themoviedb.org/3/tv/top_rated?language=${locale}&page=1`,
       options
     );
 

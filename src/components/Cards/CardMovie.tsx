@@ -4,22 +4,21 @@ import Rating from "../Rating";
 import LikeIcon from "@/assets/icons/LikeIcon";
 import Link from "next/link";
 
-const CardMovie: React.FC<{ movie: Movie | TVShow; type: TypeOfObj }> = ({
-  movie,
+const CardMovie: React.FC<{ item: Movie | TVShow; type: TypeOfObj }> = ({
+  item,
   type,
 }) => {
-  const href = `/film/${movie.id}`;
   return (
     <Link
       href={{
-        pathname: `/${type === TypeOfObj.MOVIE ? "film" : "tv"}/${movie.id}`,
+        pathname: `/${type}/${item.id}`,
       }}
-      className="rounded-lg box-shadow-2 w-[180px] h-[400px] flex flex-col relative cursor-pointer scale-95 hover:scale-100 transition-transform ease-in bg-zinc-50"
+      className="rounded-lg box-shadow-2 min-w-[180px] max-w-[180px] h-[400px] flex flex-col relative cursor-pointer scale-95 hover:scale-100 transition-transform ease-in bg-zinc-50"
     >
-      <LikeIcon className="absolute top-[10px] left-[10px]" movie={movie} />
-      {movie?.poster_path ? (
+      {/* <LikeIcon className="absolute top-[10px] left-[10px]" item={item} /> */}
+      {item?.poster_path ? (
         <Image
-          src={`https://image.tmdb.org/t/p/original${movie?.poster_path}`}
+          src={`https://image.tmdb.org/t/p/original${item?.poster_path}`}
           alt=""
           width={100}
           height={100}
@@ -32,16 +31,16 @@ const CardMovie: React.FC<{ movie: Movie | TVShow; type: TypeOfObj }> = ({
       <div className="h-full w-full py-1 px-2.5 flex flex-col justify-between rounded-br-xl">
         <div>
           <Rating
-            rate={movie?.vote_average}
+            rate={item?.vote_average}
             className="absolute -top-[20px] -right-[20px]"
           />
           <h3 className="text-base font-bold">
-            {type === TypeOfObj.MOVIE ? movie?.title : movie?.original_name}
+            {item?.title || item?.original_name || item?.name}
           </h3>
           <span className="text-sm italic">
-            {type === TypeOfObj.MOVIE
-              ? movie?.release_date
-              : movie?.first_air_date}
+            {item?.release_date ||
+              item?.first_air_date ||
+              item.known_for_department}
           </span>
         </div>
       </div>

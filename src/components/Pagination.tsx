@@ -13,13 +13,12 @@ const Pagination = ({
   setResults?: (results: MovieListing) => void;
   url: string;
 }) => {
-  const [pageCount, setPageCount] = useState<number>(
-    infos.total_pages ? infos.total_pages : 0
-  );
+  const [pageCount, setPageCount] = useState<number>(0);
   const [pageNumber, setPageNumber] = useState<number>(1);
 
   useEffect(() => {
     setPageNumber(infos.page);
+    setPageCount(infos.total_pages);
   }, [infos.total_pages, pageNumber]);
 
   const fetchData = async (number: number) => {

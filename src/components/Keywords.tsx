@@ -1,9 +1,12 @@
 import { KeywordsType, Genre } from "@/models/types";
+import { wording } from "@/lib/utils";
+import { useRouter } from "next/router";
 
 const Keywords: React.FC<KeywordsType> = (keywords) => {
+  const { locale } = useRouter();
   return (
     <div>
-      <h3 className="font-bold mt-5">Keywords</h3>
+      <h3 className="font-bold mt-5">{wording(locale, "keywords")}</h3>
       <div className="flex flex-wrap">
         {keywords.keywords.map((keyword: Genre) => (
           <span

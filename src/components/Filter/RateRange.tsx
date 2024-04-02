@@ -1,10 +1,13 @@
 import { FilterContext } from "@/contexts/FilterContext";
 import { useContext, useState } from "react";
 import { Range } from "react-range";
+import { wording } from "@/lib/utils";
+import { useRouter } from "next/router";
 
 const RateRange = () => {
   const [rangeValues, setRangeValues] = useState<any>([0, 10]);
   const { filteredRate } = useContext(FilterContext);
+  const { locale } = useRouter();
 
   const handleValues = (values: number[]) => {
     setRangeValues(values);
@@ -12,7 +15,9 @@ const RateRange = () => {
   };
   return (
     <div className="w-full flex items-center justify-center flex-col">
-      <span className="text-center w-full">Range rate</span>
+      <span className="text-center w-full">
+        {wording(locale, "range_rating")}
+      </span>
       <Range
         step={1}
         min={0}

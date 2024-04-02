@@ -7,37 +7,10 @@ import Link from "next/link";
 const SocialMedias: React.FC<SocialMediasType> = (socials) => {
   return (
     <div className="flex w-full items-center space-x-4 my-5">
-      {socials.facebook_id && (
-        <Link
-          href={`https://www.facebook.com/${socials.facebook_id}`}
-          target="_blank"
-        >
-          <FacebookIcon onClick={() => console.log("facebook")} />
-        </Link>
-      )}
-      {socials.instagram_id && (
-        <Link
-          href={`https://www.instagram.com/${socials.instagram_id}`}
-          target="_blank"
-        >
-          <InstagramIcon onClick={() => console.log("instagram")} />
-        </Link>
-      )}
-
-      {socials.twitter_id && (
-        <Link
-          href={`https://twitter.com/${socials.instagram_id}`}
-          target="_blank"
-        >
-          <XIcon onClick={() => console.log("close")} />
-        </Link>
-      )}
-
-      {socials.imdb_id && (
-        <Link href={`https://imdb.com/${socials.instagram_id}`} target="_blank">
-          <IMDBIcon onClick={() => console.log("imdb")} />
-        </Link>
-      )}
+      {socials.facebook_id && <FacebookIcon path={socials.facebook_id} />}
+      {socials.instagram_id && <InstagramIcon path={socials.instagram_id} />}
+      {socials.twitter_id && <XIcon path={socials.twitter_id} />}
+      {socials.imdb_id && <IMDBIcon path={socials.imdb_id} />}
     </div>
   );
 };

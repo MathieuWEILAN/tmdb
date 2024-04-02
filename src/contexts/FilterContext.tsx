@@ -220,7 +220,6 @@ export const FilterProvider: React.FC<FilterProviderProps> = ({
     }
 
     if (filters.years) {
-      console.log(arrayToDisplay[0]);
       arrayToDisplay = arrayToDisplay.filter((movie) => {
         let releaseYear = movie.release_date
           ? Number(movie.release_date.split("-")[0])

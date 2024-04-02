@@ -11,16 +11,18 @@ const inter = Inter({ subsets: ["latin"] });
 type TodayTVProps = {
   airing_today: TVShowListing;
   categoriesArray: Genre[];
+  locale: string;
 };
 
 const TodayTVPage: React.FC<TodayTVProps> = ({
   airing_today,
   categoriesArray,
+  locale,
 }) => {
   const [resultsPage, setResultsPage] = useState<TVShowListing>(airing_today);
   const [contents, setContents] = useState<any>(airing_today.results);
   const [page, setPage] = useState<number>(1);
-  const url = `https://api.themoviedb.org/3/tv/airing_today?language=en-US`;
+  const url = `https://api.themoviedb.org/3/tv/airing_today?language=${locale}`;
 
   const handlePageClick = async () => {
     const response = await fetch(`/api/tmdbapi?name=${url}&page=${page + 1}`);
@@ -50,7 +52,7 @@ const TodayTVPage: React.FC<TodayTVProps> = ({
 
 export default TodayTVPage;
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   const options = {
     method: "GET",
     headers: {
@@ -63,12 +65,12 @@ export const getServerSideProps: GetServerSideProps = async () => {
   let categoriesArray;
   try {
     const response1 = await fetch(
-      "https://api.themoviedb.org/3/genre/tv/list?language=en",
+      `https://api.themoviedb.org/3/genre/tv/list?language=${locale}`,
       options
     );
 
     const response3 = await fetch(
-      "https://api.themoviedb.org/3/tv/airing_today?language=en-US&page=1",
+      `https://api.themoviedb.org/3/tv/airing_today?language=${locale}&page=1`,
       options
     );
 
@@ -82,5 +84,5 @@ export const getServerSideProps: GetServerSideProps = async () => {
     console.log(error);
   }
 
-  return { props: { airing_today, categoriesArray } };
+  return { props: { airing_today, categoriesArray, locale } };
 };

@@ -1,17 +1,21 @@
-import { AppContext } from "@/contexts/AppContext";
-import { GetServerSideProps } from "next";
-import { useContext, useEffect, useState, useRef } from "react";
-import { AppContextType, Product, MovieListing } from "@/models/types";
+import { useEffect, useState, useRef } from "react";
+import { MovieListing } from "@/models/types";
 import Link from "next/link";
 import SearchIcon from "@/assets/icons/SearchIcon";
+import { wording } from "@/lib/utils";
+import { useRouter } from "next/router";
+import CloseIcon from "@/assets/icons/CloseIcon";
 
 const SearchBar = () => {
   const [searchFilm, setSearchFilm] = useState<string>("");
   const [isActived, setIsActived] = useState<boolean>(false);
   const [results, setResults] = useState<MovieListing | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   let inDebounce: any;
+
+  const { locale } = useRouter();
 
   const debounce = (func: any, delay: number) => {
     return (...args: any) => {
@@ -23,9 +27,7 @@ const SearchBar = () => {
   };
 
   const fetchData = async () => {
-    let url = `https://api.themoviedb.org/3/search/movie?query=${searchFilm.toLowerCase()}&include_adult=false&language=${
-      lang.id
-    }&page=1`;
+    let url = `https://api.themoviedb.org/3/search/multi?query=${searchFilm.toLowerCase()}&include_adult=false&language=${locale}&page=1`;
     const response = await fetch(`/api/tmdbapi?name=${url}`);
     const newResponse = await response.json();
     setResults(newResponse);
@@ -45,7 +47,7 @@ const SearchBar = () => {
       debouncedFetchData();
     }
     return () => clearTimeout(inDebounce);
-  }, [searchFilm, debouncedFetchData]);
+  }, [searchFilm]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsActived(true);
@@ -61,15 +63,21 @@ const SearchBar = () => {
       {results && isActived && (
         <Link
           href={{ pathname: "/search", query: { search: searchFilm } }}
-          className="absolute right-[40px] hover:underline text-xs md:text-sm"
+          className="absolute right-[50px] hover:underline text-xs md:text-sm"
         >
-          (Voir les {results.total_results} résultats)
+          {isLoading ? (
+            <span className="loader"></span>
+          ) : (
+            <span>
+              ({results.total_results} {wording(locale, "results")})
+            </span>
+          )}
         </Link>
       )}
 
       {!isActived ? (
         <SearchIcon
-          className="absolute md:left-1/2 md:-translate-x-1/2 right-[20px] cursor-pointer"
+          className="absolute md:left-1/2 md:-translate-x-1/2 right-[20px] cursor-pointer overflow-hidden"
           onClick={handleSearch}
         />
       ) : (
@@ -77,7 +85,7 @@ const SearchBar = () => {
           className="absolute right-[20px] cursor-pointer"
           onClick={handleClean}
         >
-          X
+          <CloseIcon stroke={"black"} className={"w-6 h-6 flex items-center"} />
         </span>
       )}
       <input
@@ -91,7 +99,7 @@ const SearchBar = () => {
         type="text"
         onChange={(e) => setSearchFilm(e.target.value)}
         value={searchFilm}
-        placeholder="Search"
+        placeholder={wording(locale, "search_placeholder")}
         className={`${
           isActived
             ? "md:w-[350px] lg:w-[500px] md:bg-white md:shadow-lg w-full bg-white"

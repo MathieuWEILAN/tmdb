@@ -11,16 +11,18 @@ const inter = Inter({ subsets: ["latin"] });
 type OnTheAirProps = {
   on_the_air: TVShowListing;
   categoriesArray: Genre[];
+  locale: string;
 };
 
 const OnTheAirPage: React.FC<OnTheAirProps> = ({
   on_the_air,
   categoriesArray,
+  locale,
 }) => {
   const [resultsPage, setResultsPage] = useState<TVShowListing>(on_the_air);
   const [contents, setContents] = useState<any>(on_the_air.results);
   const [page, setPage] = useState<number>(1);
-  const url = `https://api.themoviedb.org/3/tv/on_the_air?language=en-US`;
+  const url = `https://api.themoviedb.org/3/tv/on_the_air?language=${locale}`;
 
   const handlePageClick = async () => {
     const response = await fetch(`/api/tmdbapi?name=${url}&page=${page + 1}`);
@@ -50,7 +52,7 @@ const OnTheAirPage: React.FC<OnTheAirProps> = ({
 
 export default OnTheAirPage;
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   const options = {
     method: "GET",
     headers: {
@@ -63,12 +65,12 @@ export const getServerSideProps: GetServerSideProps = async () => {
   let categoriesArray;
   try {
     const response1 = await fetch(
-      "https://api.themoviedb.org/3/genre/tv/list?language=en",
+      `https://api.themoviedb.org/3/genre/tv/list?language=${locale}`,
       options
     );
 
     const response3 = await fetch(
-      "https://api.themoviedb.org/3/tv/on_the_air?language=en-US&page=1",
+      `https://api.themoviedb.org/3/tv/on_the_air?language=${locale}&page=1`,
       options
     );
 
@@ -82,5 +84,5 @@ export const getServerSideProps: GetServerSideProps = async () => {
     console.log(error);
   }
 
-  return { props: { on_the_air, categoriesArray } };
+  return { props: { on_the_air, categoriesArray, locale } };
 };

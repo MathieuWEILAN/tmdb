@@ -1,10 +1,11 @@
-import { ChangeEvent, useContext } from "react";
+import { useContext } from "react";
 import { FilterContext } from "@/contexts/FilterContext";
-import { start } from "repl";
+import { wording } from "@/lib/utils";
+import { useRouter } from "next/router";
 
 const YearRange = () => {
   const { filterByYears, filters } = useContext(FilterContext);
-
+  const { locale } = useRouter();
   const handleStart = (e: React.ChangeEvent<HTMLInputElement>) => {
     const startValue = parseInt(e.target.value, 10) || 1900;
     const endValue = filters.years?.end || null; // Ajustez '0' selon votre besoin
@@ -20,7 +21,7 @@ const YearRange = () => {
 
   return (
     <div className="w-full">
-      <span>By Year</span>
+      <span>{wording(locale, "range_years")}</span>
       <div className="flex w-full justify-between space-x-4">
         <input
           value={filters?.years?.start}

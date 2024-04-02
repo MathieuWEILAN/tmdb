@@ -1,12 +1,15 @@
+import Link from "next/link";
 const InstagramIcon = ({
   className,
   onClick,
+  path,
 }: {
   className?: string;
   onClick?: any;
+  path?: string;
 }) => {
   return (
-    <button onClick={onClick} className={`${className}`}>
+    <Link href={`https://www.instagram.com/${path}`} target="_blank">
       <svg
         width="30px"
         height="30px"
@@ -31,7 +34,7 @@ const InstagramIcon = ({
           fill="#0F0F0F"
         />
       </svg>
-    </button>
+    </Link>
   );
 };
 export default InstagramIcon;

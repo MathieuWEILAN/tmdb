@@ -1,11 +1,13 @@
 import { GetServerSideProps } from "next";
 import CardCast from "@/components/Cards/CardCast";
-import BannerVideo from "@/components/Banners/BannerVideo";
 import BannerPageMovie from "@/components/Banners/BannerPageMovie";
 import Similar from "@/components/Similar";
 import SocialMedias from "@/components/SocialMedias";
 import Keywords from "@/components/Keywords";
 import Collections from "@/components/Collections";
+import ModalProviders from "@/components/ModalProviders";
+import { wording } from "@/lib/utils";
+import { useRouter } from "next/router";
 
 import {
   CrewMember,
@@ -18,7 +20,7 @@ import {
   ImagesListing,
   VideosListing,
   KeywordsType,
-  Providers,
+  ProvidersListing,
   SocialMediasType,
   MovieCollection,
 } from "@/models/types";
@@ -26,10 +28,14 @@ import { slugify, createCategory } from "@/lib/utils";
 import Media from "@/components/Medias";
 
 import SectionCategory from "@/components/SectionCategorie";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Reviews from "@/components/Reviews";
 
+type Provider = {
+  id: number;
+  results: any;
+};
 type FilmProps = {
   movieData: MovieDetails;
   recommandations: MovieListing;
@@ -39,7 +45,7 @@ type FilmProps = {
   images: ImagesListing;
   videos: VideosListing;
   keywords: KeywordsType;
-  providers: Providers;
+  providers: Provider;
   socials: SocialMediasType;
   movieCollection: MovieCollection;
 };
@@ -54,9 +60,21 @@ const FilmPage: React.FC<FilmProps> = ({
   keywords,
   socials,
   movieCollection,
+  providers,
 }) => {
   const { crew, cast } = credits;
-  console.log("DETAILS", movieCollection);
+  const [isModal, setIsModal] = useState<boolean>(false);
+  const { locale } = useRouter();
+
+  console.log("PROVIDERS", providers);
+  let providersResults;
+  if (locale === "en-US") {
+    providersResults = providers.results.US;
+  } else if (locale === "fr-FR") {
+    providersResults = providers.results.FR;
+  } else if (locale === "es-ES") {
+    providersResults = providers.results.ES;
+  }
   return (
     <section className="flex flex-col h-auto w-full">
       <BannerPageMovie
@@ -72,7 +90,6 @@ const FilmPage: React.FC<FilmProps> = ({
           <div className="my-10">
             <h2>Casting</h2>
             <div className="mx-auto w-full flex flex-nowrap overflow-auto no-scrollbar">
-              {" "}
               {credits.cast.slice(0, 10).map((cast) => {
                 return <CardCast key={cast.id} cast={cast} />;
               })}
@@ -87,19 +104,32 @@ const FilmPage: React.FC<FilmProps> = ({
           {movieCollection && <Collections {...movieCollection} />}
         </div>
 
-        <aside className="order-1 lg:order-2 w-full lg:w-1/5 p-5 my-10 border-2 rounded-xl box-shadow-2 h-auto">
+        <aside className="order-1 lg:order-2 w-full lg:w-1/5 p-5 my-10 rounded-xl box-shadow-2 h-auto">
           {socials && <SocialMedias {...socials} />}
           <>
-            <h3 className="font-bold mt-5">Realese date :</h3>
+            <h3 className="font-bold mt-5">
+              {wording(locale, "release_date")}
+            </h3>
             <p>{movieData.release_date}</p>
-            <h3 className="font-bold mt-5">Revenue :</h3>
-            <p>{movieData.revenue.toLocaleString("en-US")} $</p>
-            <h3 className="font-bold mt-5">Budget :</h3>
-            <p>{movieData.budget.toLocaleString("en-US")} $</p>
+            <h3 className="font-bold mt-5"> {wording(locale, "revenue")}:</h3>
+            <p>{movieData.revenue.toLocaleString(locale)} $</p>
+            <h3 className="font-bold mt-5">{wording(locale, "budget")}:</h3>
+            <p>{movieData.budget.toLocaleString(locale)} $</p>
           </>
           <Keywords {...keywords} />
         </aside>
       </div>
+      <button
+        onClick={() => {
+          setIsModal(!isModal);
+        }}
+        className="z-50 fixed bottom-[40px] right-[40px] rounded-full py-2 px-4 bg-black text-white"
+      >
+        {wording(locale, "watch_film")}{" "}
+      </button>
+      {isModal && (
+        <ModalProviders setIsModal={setIsModal} providers={providersResults} />
+      )}
     </section>
   );
 };
@@ -108,6 +138,7 @@ export default FilmPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const movieId = context.query.id;
+  const locale = context.locale;
   const options = {
     method: "GET",
     headers: {
@@ -116,7 +147,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     },
   };
   const url = `
-    https://api.themoviedb.org/3/movie/${movieId}`;
+    https://api.themoviedb.org/3/movie/${movieId}?language=${locale}`;
 
   let movieData;
   let categoriesObj;
@@ -133,12 +164,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
     const response = await fetch(url, options);
     const response1 = await fetch(
-      "https://api.themoviedb.org/3/genre/movie/list?language=en",
+      `https://api.themoviedb.org/3/genre/movie/list?language=${locale}`,
       options
     );
 
     const response2 = await fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}/credits?language=en-US`,
+      `https://api.themoviedb.org/3/movie/${movieId}/credits?language=${locale}`,
       options
     );
     const response3 = await fetch(
@@ -146,19 +177,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       options
     );
     const response4 = await fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}/recommendations?language=en-US&page=1`,
+      `https://api.themoviedb.org/3/movie/${movieId}/recommendations?language=${locale}&page=1`,
       options
     );
     const response5 = await fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}/reviews?language=en-US&page=1`,
+      `https://api.themoviedb.org/3/movie/${movieId}/reviews?language=${locale}&page=1`,
       options
     );
     const response6 = await fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}/similar?language=en-US&page=1`,
+      `https://api.themoviedb.org/3/movie/${movieId}/similar?language=${locale}&page=1`,
       options
     );
     const response7 = await fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}/videos?language=en-US`,
+      `https://api.themoviedb.org/3/movie/${movieId}/videos?language=${locale}`,
       options
     );
 
@@ -189,15 +220,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     providers = await response9.json();
     socials = await response10.json();
 
-    if (movieData?.belongs_to_collection) {
-      const response11 = await fetch(
-        `https://api.themoviedb.org/3/collection/${movieData.belongs_to_collection.id}?language=en-US`,
-        options
-      );
-      movieCollection = await response11.json();
-      console.log("COLLECTION", movieCollection);
-    }
-
+    // if (movieData?.belongs_to_collection) {
+    //   const response11 = await fetch(
+    //     `https://api.themoviedb.org/3/collection/${movieData.belongs_to_collection.id}?language=${locale}`,
+    //     options
+    //   );
+    //   movieCollection = await response11.json();
+    // }
     movieData = createCategory(movieData, categoriesObj.genres);
   } catch (error) {
     console.log(error);
@@ -215,7 +244,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       keywords,
       providers,
       socials,
-      movieCollection,
+      // movieCollection,
     },
   };
 };

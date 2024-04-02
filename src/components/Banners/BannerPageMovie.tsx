@@ -9,7 +9,6 @@ import {
 import Image from "next/image";
 import Tag from "../Tag";
 import {
-  convertToPercentage,
   getTextColor,
   getYear,
   convertMinutesToHoursMinutes,
@@ -19,7 +18,8 @@ import { FastAverageColor } from "fast-average-color";
 import { useEffect, useState } from "react";
 import BannerVideo from "./BannerVideo";
 import BasicButton from "../Button/BasicButton";
-
+import { wording } from "@/lib/utils";
+import { useRouter } from "next/router";
 const BannerPageMovie = ({
   movie,
   credits,
@@ -38,6 +38,7 @@ const BannerPageMovie = ({
   const [colorBg, setColorBg] = useState<string>("");
   const [colorText, setColorText] = useState<boolean>(false);
   const [isPlayed, setIsPlayed] = useState<boolean>(false);
+  const { locale } = useRouter();
   useEffect(() => {
     const bannerId = `banner-image-${movie?.id}`;
     const fac = new FastAverageColor();
@@ -129,11 +130,12 @@ const BannerPageMovie = ({
                 )}
               </div>
               <span className="text-sm">
-                Release date :{" "}
+                {wording(locale, "release_date")}:
                 {type === TypeOfObj.MOVIE
                   ? movie?.release_date
                   : movie?.first_air_date}
-                - Runtime :{convertMinutesToHoursMinutes(movie?.runtime || 0)}
+                - {wording(locale, "runtime")} :
+                {convertMinutesToHoursMinutes(movie?.runtime || 0)}
               </span>
               <div className="flex items-center">
                 <Rating
@@ -143,17 +145,21 @@ const BannerPageMovie = ({
                   } bg-opacity-60`}
                 />
                 <span className="text-sm ml-2.5">
-                  ({movie?.vote_count} votes)
+                  ({movie?.vote_count} {wording(locale, "votes")})
                 </span>
               </div>
               {movie?.tagline && (
                 <q className="italic opacity-70">{movie?.tagline}</q>
               )}
-              <h3 className="text-xl font-bold">Synopsis</h3>
+              <h3 className="text-xl font-bold">
+                {wording(locale, "synopsis")}
+              </h3>
               <p className="">{movie?.overview}</p>
               {movie?.homepage && (
                 <div className="flex flex-col lg:flex-row lg:items-center lg:space-x-2.5">
-                  <h3 className="text-lg font-bold"> Official website :</h3>
+                  <h3 className="text-lg font-bold">
+                    {wording(locale, "official_site")} :
+                  </h3>
                   <a
                     href={movie?.homepage}
                     className="hover:underline font-normal line-clamp-1 md:line-clamp-none z-10 md:z-0"
@@ -164,7 +170,9 @@ const BannerPageMovie = ({
                 </div>
               )}
               <div className="flex flex-col lg:flex-row lg:items-center lg:space-x-2.5">
-                <h3 className="text-lg font-bold"> Realisator :</h3>
+                <h3 className="text-lg font-bold">
+                  {wording(locale, "realisator")} :
+                </h3>
                 <span className="font-normal">{director?.name}</span>
               </div>
               {videos && (
@@ -175,7 +183,7 @@ const BannerPageMovie = ({
                     }}
                     className={colorText ? "border-white" : "border-stone-950"}
                   >
-                    Watch the trailer
+                    {wording(locale, "watch_trailer")}
                   </BasicButton>
                 </div>
               )}

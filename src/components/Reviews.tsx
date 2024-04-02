@@ -3,11 +3,14 @@ import Image from "next/image";
 import Rating from "./Rating";
 import { formaterDate } from "@/lib/utils";
 import { useState } from "react";
+import { wording } from "@/lib/utils";
+import { useRouter } from "next/router";
 
 const Reviews: React.FC<ReviewsListing> = (reviews) => {
+  const { locale } = useRouter();
   return (
     <div>
-      <h2>Reviews</h2>
+      <h2>{wording(locale, "reviews")}</h2>
       <div className="flex flex-col">
         {reviews.results.slice(0, 3).map((item) => {
           return <Review review={item} key={`review-${item.id}`} />;
@@ -23,7 +26,7 @@ const Review = ({ review }: { review: ReviewType }) => {
   const [isMore, setIsMore] = useState<boolean>(false);
   return (
     <div
-      className={`box-shadow-2 w-full my-2 rounded-lg h-auto p-5 bg-zinc-50`}
+      className={`box-shadow-2 w-full my-10 rounded-lg h-auto p-5 bg-zinc-50`}
     >
       <div className="flex items-center">
         {review?.author_details.avatar_path ? (

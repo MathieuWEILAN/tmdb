@@ -11,16 +11,18 @@ const inter = Inter({ subsets: ["latin"] });
 type UpcomingProps = {
   upcoming: MovieListing;
   categoriesArray: Genre[];
+  locale: string;
 };
 
 const UpcomingPage: React.FC<UpcomingProps> = ({
   upcoming,
   categoriesArray,
+  locale,
 }) => {
   const [resultsPage, setResultsPage] = useState<MovieListing>(upcoming);
   const [contents, setContents] = useState<any>(upcoming.results);
   const [page, setPage] = useState<number>(1);
-  const url = `https://api.themoviedb.org/3/movie/upcoming?language=en-US`;
+  const url = `https://api.themoviedb.org/3/movie/upcoming?language=${locale}`;
 
   const handlePageClick = async () => {
     const response = await fetch(`/api/tmdbapi?name=${url}&page=${page + 1}`);
@@ -50,7 +52,7 @@ const UpcomingPage: React.FC<UpcomingProps> = ({
 
 export default UpcomingPage;
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   const options = {
     method: "GET",
     headers: {
@@ -63,12 +65,12 @@ export const getServerSideProps: GetServerSideProps = async () => {
   let categoriesArray;
   try {
     const response1 = await fetch(
-      "https://api.themoviedb.org/3/genre/movie/list?language=en",
+      `https://api.themoviedb.org/3/genre/movie/list?language=${locale}`,
       options
     );
 
     const response3 = await fetch(
-      "https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1",
+      `https://api.themoviedb.org/3/movie/upcoming?language=${locale}&page=1`,
       options
     );
 
@@ -82,5 +84,5 @@ export const getServerSideProps: GetServerSideProps = async () => {
     console.log(error);
   }
 
-  return { props: { upcoming, categoriesArray } };
+  return { props: { upcoming, categoriesArray, locale } };
 };

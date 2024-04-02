@@ -25,6 +25,45 @@ export type ReviewType = {
   url: string;
 };
 
+export interface PersonListing {
+  page: number;
+  results: PersonType[];
+  total_pages: number;
+  total_results: number;
+}
+export interface PersonType {
+  adult: boolean;
+  gender: number;
+  id: number;
+  known_for: Movie[];
+  known_for_department: string;
+  media_type: "person";
+  name: string;
+  original_name: string;
+  popularity: number;
+}
+
+export interface PersonDetails {
+  adult: boolean;
+  also_known_as: string[];
+  biography: string;
+  birthday: string;
+  deathday: string | null;
+  gender: number;
+  homepage: string | null;
+  id: number;
+  imdb_id: string;
+  known_for_department: string;
+  name: string;
+  place_of_birth: string;
+  popularity: number;
+  profile_path: string;
+}
+
+export interface PersonCredits {
+  cast: Movie[] | TVShow[];
+}
+
 export interface TVShowListing {
   page: number;
   results: TVShow[];
@@ -39,6 +78,7 @@ export interface TVShow {
   origin_country: string[];
   original_language: string;
   original_name: string;
+  original_title?: string;
   overview: string;
   popularity: number;
   poster_path: string;
@@ -144,21 +184,41 @@ export interface VideoPreview {
 }
 
 export type SocialMediasType = {
-  id: number;
-  imdb_id: string;
-  wikidata_id: string;
-  facebook_id: string;
-  instagram_id: string;
-  twitter_id: string;
+  id?: number;
+  imdb_id?: string;
+  wikidata_id?: string;
+  facebook_id?: string;
+  instagram_id?: string;
+  twitter_id?: string;
+  freebase_mid?: string | null;
+  freebase_id?: string | null;
+  tvrage_id?: number | null;
+  tiktok_id?: string | null;
+  youtube_id: string | null;
 };
 
+export interface ProvidersListing {
+  buy: ProviderType[];
+  flatrate: ProviderType[];
+  link: string;
+  rent: ProviderType[];
+}
+export interface ProviderType {
+  display_priority: number;
+  logo_path: string;
+  provider_id: number;
+  provider_name: string;
+}
 export interface Movie {
   adult: boolean;
   backdrop_path: string;
+  character?: string; // Assuming this is a property for cast members
+  credit_id?: string; // Assuming this is a property for cast members
   genre_ids?: Genre[]; // Assuming genre_ids is an array of Genre objects, otherwise, use number[] if it's just IDs
   id: number;
   original_language: string;
-  original_title: string;
+  original_title?: string;
+  original_name?: string; // Assuming this is a property for TV shows
   overview: string;
   popularity: number;
   poster_path: string;
@@ -177,8 +237,9 @@ export interface Dates {
 }
 
 export enum TypeOfObj {
-  TV = "TV",
-  MOVIE = "MOVIE",
+  TV = "tv",
+  MOVIE = "movie",
+  PERSON = "person",
 }
 export interface MovieListing {
   dates?: Dates;
@@ -330,7 +391,8 @@ export interface ImageDetails {
 
 export interface ImagesListing {
   id?: number;
-  backdrops: ImageDetails[];
+  backdrops?: ImageDetails[];
+  profiles?: ImageDetails[];
 }
 
 export interface ReviewsListing {

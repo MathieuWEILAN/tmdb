@@ -4,10 +4,9 @@ import LikeIcon from "@/assets/icons/LikeIcon";
 import Link from "next/link";
 
 const CardCast = ({ cast }: { cast: CastMember }) => {
-  const href = `/film/${cast.id}`;
   return (
     <Link
-      href={{ pathname: `/film/${cast.id}` }}
+      href={{ pathname: `/person/${cast.id}` }}
       className="shrink-0 rounded-lg box-shadow-2 w-32 h-auto max-h-[300px] my-5 flex flex-col relative cursor-pointer scale-95 hover:scale-100 transition-transform ease-in"
     >
       <LikeIcon className="absolute top-[10px] left-[10px]" />

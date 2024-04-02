@@ -1,9 +1,4 @@
-import { Movie, VideosListing, VideoPreview } from "@/models/types";
-import Image from "next/image";
-import Tag from "../Tag";
-import { convertToPercentage } from "../../lib/utils";
-import PlayIcon from "@/assets/icons/PlayIcon";
-import { useState } from "react";
+import { VideoPreview } from "@/models/types";
 import CloseIcon from "@/assets/icons/CloseIcon";
 
 const BannerVideo = ({
@@ -15,13 +10,13 @@ const BannerVideo = ({
   isPlayed?: boolean;
   setIsPlayed?: any;
 }) => {
-  console.log(video);
   return (
-    <div className="banner w-screen h-screen z-[100] bg-stone-950 fixed top-0 bg-opacity-90">
+    <div className="banner w-screen h-screen z-[100] bg-stone-950 fixed top-0 bg-opacity-90 left-0">
       <div className="relative h-full w-full flex items-center justify-center">
         <CloseIcon
           className="absolute top-[30px] right-[30px] cursor-pointer"
           onClick={() => setIsPlayed(false)}
+          stroke="white"
         />
         <div className={`h-[300px] md:h-[720px] w-[1080px]`}>
           {isPlayed && video && (

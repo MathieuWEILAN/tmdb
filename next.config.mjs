@@ -1,5 +1,13 @@
 /** @type {import('next').NextConfig} */
+// next.config.js
+
 const nextConfig = {
+  i18n: {
+    locales: ["en-US", "fr-FR", "es-ES"],
+    defaultLocale: "en-US",
+    localeDetection: false,
+  },
+  trailingSlash: true,
   reactStrictMode: true,
   images: {
     remotePatterns: [

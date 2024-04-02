@@ -1,12 +1,15 @@
+import Link from "next/link";
 const FacebookIcon = ({
   className,
   onClick,
+  path,
 }: {
   className?: string;
   onClick?: any;
+  path?: string;
 }) => {
   return (
-    <button onClick={onClick} className={`${className}`}>
+    <Link href={`https://www.facebook.com/${path}`} target="_blank">
       <svg
         fill="#000000"
         height="30px"
@@ -21,7 +24,7 @@ const FacebookIcon = ({
 	c0,0-11-3.2-21.3-3.2c-10.3,0-19.5,3.7-19.5,14v29.9H169.5z"
         />
       </svg>
-    </button>
+    </Link>
   );
 };
 export default FacebookIcon;

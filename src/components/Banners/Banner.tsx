@@ -24,7 +24,7 @@ const Banner = ({ movie }: { movie: Movie | null }) => {
         </div>
         <p className="mt-2.5 h-auto line-clamp-3">{movie?.overview}</p>
         <Link
-          href={{ pathname: `film/${movie?.id}` }}
+          href={{ pathname: `/movie/${movie?.id}` }}
           className="w-full text-right mt-2.5"
         >
           En savoir plus

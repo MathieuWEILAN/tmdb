@@ -1,4 +1,7 @@
-import { Movie, MovieListing, Genre } from "../models/types";
+import { Movie, MovieListing, Genre, TypeOfObj, TVShow } from "../models/types";
+import fr from "../data/fr-FR.json";
+import en from "../data/en-US.json";
+import es from "../data/es-ES.json";
 export const slugify = (text: string) => {
   return (
     text
@@ -72,4 +75,41 @@ export const formaterDate = (dateISO: string) => {
   const date = new Date(dateISO);
   const dateFormatee = new Intl.DateTimeFormat("en-US", options).format(date);
   return dateFormatee;
+};
+
+export const wording = (lang: string, word: string) => {
+  const wording = {
+    fr,
+    en,
+    es,
+  };
+
+  const newLang = lang.split("-")[0];
+  if (lang && word) {
+    return wording[newLang][word];
+  } else {
+    return null;
+  }
+};
+
+export const groupByDecade = (items: Movie[] | TVShow[], type: TypeOfObj) => {
+  return items.reduce((acc, item) => {
+    // Extraire l'année de la date
+    let year;
+    if (type === TypeOfObj.MOVIE) {
+      year = item.release_date.substring(0, 4);
+    }
+    if (type === TypeOfObj.TV) {
+      year = item.first_air_date.substring(0, 4);
+    }
+    // Trouver la décennie en retirant l'unité et en multipliant par 10
+    const decade = Math.floor(year / 10) * 10;
+    // Créer une clé pour la décennie si elle n'existe pas
+    if (!acc[decade]) {
+      acc[decade] = [];
+    }
+    // Ajouter l'objet au groupe de la décennie correspondante
+    acc[decade].push(item);
+    return acc;
+  }, {});
 };

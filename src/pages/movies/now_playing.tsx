@@ -5,22 +5,25 @@ import SliderCategorie from "@/components/SliderCategorie";
 import { createCategory } from "@/lib/utils";
 import { useState } from "react";
 import { FilterProvider } from "../../contexts/FilterContext";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 const inter = Inter({ subsets: ["latin"] });
 
 type NowPlayingProps = {
   now_playing: MovieListing;
   categoriesArray: Genre[];
+  locale: string;
 };
 
 const NowPlayingPage: React.FC<NowPlayingProps> = ({
   now_playing,
   categoriesArray,
+  locale,
 }) => {
   const [resultsPage, setResultsPage] = useState<MovieListing>(now_playing);
   const [contents, setContents] = useState<any>(now_playing.results);
   const [page, setPage] = useState<number>(1);
-  const url = `https://api.themoviedb.org/3/movie/now_playing?language=en-US`;
+  const url = `https://api.themoviedb.org/3/movie/now_playing?language=${locale}`;
 
   const handlePageClick = async () => {
     const response = await fetch(`/api/tmdbapi?name=${url}&page=${page + 1}`);
@@ -50,7 +53,7 @@ const NowPlayingPage: React.FC<NowPlayingProps> = ({
 
 export default NowPlayingPage;
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   const options = {
     method: "GET",
     headers: {
@@ -63,12 +66,12 @@ export const getServerSideProps: GetServerSideProps = async () => {
   let categoriesArray;
   try {
     const response1 = await fetch(
-      "https://api.themoviedb.org/3/genre/movie/list?language=en",
+      `https://api.themoviedb.org/3/genre/movie/list?language=${locale}`,
       options
     );
 
     const response3 = await fetch(
-      "https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1",
+      `https://api.themoviedb.org/3/movie/now_playing?language=${locale}&page=1`,
       options
     );
 
@@ -82,5 +85,5 @@ export const getServerSideProps: GetServerSideProps = async () => {
     console.log(error);
   }
 
-  return { props: { now_playing, categoriesArray } };
+  return { props: { now_playing, categoriesArray, locale } };
 };
