@@ -1,13 +1,15 @@
 import { createContext, useState } from "react";
-import { AppContextType, ProductsArray, CategoriesArray } from "@/models/types";
-import { Film } from "@/models/types";
+import { MovieDetails, TVShowDetails, PersonType } from "@/models/types";
 
 export const UserContext = createContext<UserContextType>(
   {} as UserContextType
 );
 type UserContextType = {
-  handleFavorite: (film: Film) => void;
-  favorites: Film[];
+  handleFavorite: any;
+  favorites: MovieDetails[] | TVShowDetails[] | PersonType[];
+  setFavorites: (
+    items: MovieDetails[] | TVShowDetails[] | PersonType[]
+  ) => void;
 };
 
 type UserProviderProps = {
@@ -15,18 +17,20 @@ type UserProviderProps = {
 };
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
-  const [favorites, setFavorites] = useState<Film[]>([]);
+  const [favorites, setFavorites] = useState<
+    MovieDetails[] | TVShowDetails[] | PersonType[]
+  >([]);
 
-  const handleFavorite = (film: Film) => {
-    if (favorites.find((f) => f.id === film.id)) {
-      setFavorites(favorites.filter((f) => f.id !== film.id));
+  const handleFavorite = (item: MovieDetails | TVShowDetails | PersonType) => {
+    if (favorites.find((f) => f.id === item.id)) {
+      setFavorites(favorites.filter((f) => f.id !== item.id));
     } else {
-      setFavorites([...favorites, film]);
+      setFavorites([...favorites, item]);
     }
   };
 
   return (
-    <UserContext.Provider value={{ handleFavorite, favorites }}>
+    <UserContext.Provider value={{ handleFavorite, favorites, setFavorites }}>
       {children}
     </UserContext.Provider>
   );

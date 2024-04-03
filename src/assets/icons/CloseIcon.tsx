@@ -24,7 +24,7 @@ const CloseIcon = ({
           d="M14.5 9.50002L9.5 14.5M9.49998 9.5L14.5 14.5"
           stroke={stroke}
           strokeWidth="1.5"
-          stroke-linecap="round"
+          strokeLinecap="round"
         />
       </svg>
     </button>

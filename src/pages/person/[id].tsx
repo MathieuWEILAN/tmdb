@@ -93,7 +93,7 @@ const PersonPage: React.FC<PersonProps> = ({
             </span>
           </div>
           <div className="flex items-center">
-            <p>{wording(locale, "born")}</p>
+            {/* <p>{wording(locale, "born")}</p> */}
             <p>
               {personData.birthday} - &nbsp;
               {personData.deathday && `- ${personData.deathday}`}

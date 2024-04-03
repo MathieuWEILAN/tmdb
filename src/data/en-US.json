@@ -10,6 +10,7 @@
   "character": "Character",
 
   "characters": "Characters",
+  "favorites": "Your favorites",
   "filmography": "Filmography",
   "flatrate": "Flatrate",
 
@@ -48,5 +49,6 @@
   "votes": "Votes",
   "watch_trailer": "Watch Trailer",
   "watch_film": "Watch Film",
+  "welcome": "Welcome",
   "your_research": "Your research"
 }

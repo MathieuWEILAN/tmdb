@@ -4,6 +4,7 @@
   "buy": "Acheter",
   "flatrate": "Streaming",
   "rent": "Louer",
+  "welcome": "Bienvenu",
   "biography": "Biographie",
   "known_for": "Connu pour",
   "see_more": "Voir Plus",
@@ -43,7 +44,7 @@
   "on_the_air": "En ce moment",
   "results": "Résultats",
   "watch_film": "Voir le film",
-
+  "favorites": "Vos favoris",
   "your_research": "Votre recherche",
   "filmography": "Filmographie"
 }

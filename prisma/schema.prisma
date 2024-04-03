@@ -10,6 +10,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Favorite {
+  id           Int      @id @default(autoincrement())
+  idMovie      Int
+  title        String
+  userId       String
+  type         String
+  user         User @relation(fields: [userId], references: [id])
+}
+
+model ToWatch {
+  id           Int      @id @default(autoincrement())
+  idMovie      Int
+  title        String
+  userId       String
+  type         String
+  user         User @relation(fields: [userId], references: [id])
+}
+
+
 model Account {
   id                 String  @id @default(cuid())
   userId             String
@@ -45,6 +64,8 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  favorites     Favorite[]
+  toWatch       ToWatch[]
 }
 
 model VerificationToken {

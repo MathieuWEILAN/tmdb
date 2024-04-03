@@ -10,6 +10,7 @@
   "character": "Personaje",
 
   "characters": "Personajes",
+  "favorites": "Tu favoritas",
   "filmography": "Filmografía",
   "flatrate": "Ver en Streaming",
   "keywords": "Palabras Clave",
@@ -47,6 +48,6 @@
   "watch_film": "Ver Película",
 
   "watch_trailer": "Ver Tráiler",
-
+  "welcome": "Bienvenído",
   "your_research": "Tu búsqueda"
 }

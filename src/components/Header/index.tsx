@@ -1,6 +1,6 @@
 import LogoutButton from "../Button/LogoutButton";
 import LoginButton from "../Button/LoginButton";
-import { useSession } from "next-auth/react";
+
 import Navigation from "../Navigation";
 import Image from "next/image";
 import NextJSLogo from "../../assets/img/next.svg";
@@ -10,8 +10,7 @@ import { useContext, useState } from "react";
 import { AppContext } from "@/contexts/AppContext";
 import { useRouter } from "next/router";
 import Select from "react-select";
-
-import avatar from "../../assets/img/avatar.png";
+import Authentification from "./Authentification";
 
 type Language = {
   value: string;
@@ -25,10 +24,7 @@ const options = [
 ];
 const Header: React.FC = () => {
   const router = useRouter();
-  const find = options.find((option) => option.value === router.locale);
-  const [langLocale, setLangLocale] = useState<Language>(
-    router.locale ? find : options[0]
-  );
+  const [langLocale, setLangLocale] = useState<Language>(options[0]);
   const { setLang } = useContext(AppContext);
 
   const { asPath } = router;
@@ -57,15 +53,7 @@ const Header: React.FC = () => {
 
         <div className="flex items-end md:items-center justify-center w-auto space-x-2.5 mt-2 md:mt-0">
           <SearchBar />
-          <Link href={"/"} className="relative w-10 h-10 rounded-full">
-            <Image
-              src={avatar.src}
-              className="w-10 h-10 rounded-full"
-              alt="avatar"
-              width={40}
-              height={40}
-            />
-          </Link>
+          <Authentification />
           <Select
             defaultValue={langLocale}
             onChange={handleLang}

@@ -8,6 +8,10 @@ import Collections from "@/components/Collections";
 import ModalProviders from "@/components/ModalProviders";
 import { wording } from "@/lib/utils";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
+import { PrismaClient } from "@prisma/client";
+import { getSession } from "next-auth/react";
+import prisma from "@/lib/prisma";
 
 import {
   CrewMember,
@@ -28,7 +32,7 @@ import { slugify, createCategory } from "@/lib/utils";
 import Media from "@/components/Medias";
 
 import SectionCategory from "@/components/SectionCategorie";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Reviews from "@/components/Reviews";
 
@@ -48,6 +52,7 @@ type FilmProps = {
   providers: Provider;
   socials: SocialMediasType;
   movieCollection: MovieCollection;
+  isFavorite: boolean;
 };
 const FilmPage: React.FC<FilmProps> = ({
   movieData,
@@ -61,12 +66,13 @@ const FilmPage: React.FC<FilmProps> = ({
   socials,
   movieCollection,
   providers,
+  isFavorite,
 }) => {
   const { crew, cast } = credits;
   const [isModal, setIsModal] = useState<boolean>(false);
+  const [isLiked, setIsLiked] = useState<boolean>(false);
   const { locale } = useRouter();
-
-  console.log("PROVIDERS", providers);
+  const { data: session, status } = useSession();
   let providersResults;
   if (locale === "en-US") {
     providersResults = providers.results.US;
@@ -75,6 +81,52 @@ const FilmPage: React.FC<FilmProps> = ({
   } else if (locale === "es-ES") {
     providersResults = providers.results.ES;
   }
+  const handleAddFavorite = async () => {
+    const response = await fetch("/api/addFav", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: session.user.id, // Assurez-vous que ceci correspond à l'ID de l'utilisateur connecté
+        movieId: movieData.id,
+        movieTitle: movieData.title,
+        movieType: "movie",
+      }),
+    });
+
+    if (response.ok) {
+      setIsLiked(true);
+      console.log("Film ajouté aux favoris");
+    } else {
+      console.error("Erreur", response.statusText);
+    }
+  };
+
+  const handleDeleteFavorite = async () => {
+    const response = await fetch("/api/deleteFav", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify({
+        userId: session.user.id,
+        movieId: movieData.id,
+      }),
+    });
+
+    if (response.ok) {
+      setIsLiked(false);
+      console.log("Film supprimé des favoris");
+    } else {
+      console.error("Erreur", response.statusText);
+    }
+  };
+  useEffect(() => {
+    setIsLiked(isFavorite);
+  }, []);
+
   return (
     <section className="flex flex-col h-auto w-full">
       <BannerPageMovie
@@ -88,6 +140,23 @@ const FilmPage: React.FC<FilmProps> = ({
       <div className="flex flex-col  lg:flex-row container mx-auto px-5">
         <div className="flex flex-col w-full lg:w-4/5 order-2 lg:order-1 lg:pr-5">
           <div className="my-10">
+            {status === "authenticated" && !isLiked && (
+              <button
+                onClick={handleAddFavorite}
+                className="bg-green-400 border-2 rounded-full p-5"
+              >
+                Add TO Favorites
+              </button>
+            )}
+
+            {status === "authenticated" && isLiked && (
+              <button
+                onClick={handleDeleteFavorite}
+                className="bg-red-400 border-2 rounded-full p-5"
+              >
+                Remove TO Favorites
+              </button>
+            )}
             <h2>Casting</h2>
             <div className="mx-auto w-full flex flex-nowrap overflow-auto no-scrollbar">
               {credits.cast.slice(0, 10).map((cast) => {
@@ -95,9 +164,9 @@ const FilmPage: React.FC<FilmProps> = ({
               })}
             </div>
           </div>
-          {videos.results.length > 0 && (
+          {/* {videos.results.length > 0 && (
             <Media videos={videos} images={images} />
-          )}
+          )} */}
 
           {similar?.results.length > 0 && <Similar similars={similar} />}
           {reviews.results.length > 0 && <Reviews {...reviews} />}
@@ -148,7 +217,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
   const url = `
     https://api.themoviedb.org/3/movie/${movieId}?language=${locale}`;
-
   let movieData;
   let categoriesObj;
   let credits;
@@ -161,6 +229,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let providers;
   let socials;
   let movieCollection;
+  let isFavorite = false;
   try {
     const response = await fetch(url, options);
     const response1 = await fetch(
@@ -227,7 +296,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     //   );
     //   movieCollection = await response11.json();
     // }
-    movieData = createCategory(movieData, categoriesObj.genres);
+    const session = await getSession({ req: context.req });
+    if (session) {
+      const favorites = await prisma.favorite.findMany({
+        where: { userId: session.user.id },
+      });
+      const checkFavorites = favorites.find(
+        (favorite: any) => favorite.idMovie === movieData?.id
+      );
+      if (checkFavorites) {
+        console.log("CHECK FAVORITE", checkFavorites);
+        isFavorite = true;
+      }
+    }
   } catch (error) {
     console.log(error);
   }
@@ -245,6 +326,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       providers,
       socials,
       // movieCollection,
+      isFavorite,
     },
   };
 };

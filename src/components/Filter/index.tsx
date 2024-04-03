@@ -5,6 +5,7 @@ import FilterIcon from "@/assets/icons/FilterIcon";
 import SortBy from "./SortBy";
 import { useContext, useState } from "react";
 import { FilterContext } from "@/contexts/FilterContext";
+import { TypeOfObj } from "@/models/types";
 
 enum TypeSort {
   RATE = "rate",
@@ -21,9 +22,8 @@ const Filter: React.FC = () => {
 
   const { sortByDate, sortByRate, sortByName } = useContext(FilterContext);
   return (
-    <section className="h-auto rounded-xl box-shadow-2 w-full lg:w-72 sticky top-[100px] px-4 py-6 bg-zinc-50">
+    <section className="h-auto rounded-xl box-shadow-2 w-full lg:w-72 sticky top-[100px] p-4 mt-8 lg:mt-0 bg-zinc-50">
       <FilterIcon className="lg:hidden" onClick={handleFilter} />
-
       <div
         className={`${
           isFilter ? "max-h-screen p-2" : "max-h-0"
@@ -33,19 +33,19 @@ const Filter: React.FC = () => {
           title={"rate"}
           onClick={sortByRate}
           type={type}
-          handleType={() => setType("rate")}
+          handleType={() => setType(TypeSort.RATE)}
         />
         <SortBy
           title={"date"}
           onClick={sortByDate}
           type={type}
-          handleType={() => setType("date")}
+          handleType={() => setType(TypeSort.DATE)}
         />
         <SortBy
           title={"name"}
           onClick={sortByName}
           type={type}
-          handleType={() => setType("name")}
+          handleType={() => setType(TypeSort.NAME)}
         />
         <RateRange />
         <ByCategories />

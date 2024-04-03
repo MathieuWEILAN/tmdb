@@ -77,7 +77,7 @@ export const formaterDate = (dateISO: string) => {
   return dateFormatee;
 };
 
-export const wording = (lang: string, word: string) => {
+export const wording = (lang: string | undefined, word: string) => {
   const wording = {
     fr,
     en,
@@ -92,7 +92,7 @@ export const wording = (lang: string, word: string) => {
   }
 };
 
-export const groupByDecade = (items: Movie[] | TVShow[], type: TypeOfObj) => {
+export const groupByDecade = (items: any, type: TypeOfObj) => {
   return items.reduce((acc, item) => {
     // Extraire l'année de la date
     let year;

@@ -16,7 +16,9 @@ const SliderCategorie = ({
   handlePageClick: () => void;
   type: TypeOfObj;
 }) => {
-  const [filmSelected, setFilmSelected] = useState<Movie | null>(null);
+  const [filmSelected, setFilmSelected] = useState<Movie | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     setFilmSelected(arrayContents?.[0]);

@@ -1,5 +1,7 @@
 import Image from "next/image";
 import { Inter } from "next/font/google";
+import { getSession } from "next-auth/react";
+import prisma from "@/lib/prisma";
 import type { GetServerSideProps } from "next";
 import Link from "next/link";
 import { Movie, MovieListing, Categories, Genre } from "@/models/types";
@@ -9,6 +11,8 @@ import { headers } from "next/headers";
 import SliderCategorie from "@/components/SliderCategorie";
 import { createCategory } from "@/lib/utils";
 import { KeyObjectType } from "crypto";
+import { useContext, useEffect } from "react";
+import { UserContext } from "@/contexts/UserContext";
 const inter = Inter({ subsets: ["latin"] });
 
 type HomeProps = {
@@ -16,6 +20,7 @@ type HomeProps = {
   categories: Categories[];
   popular: MovieListing;
   topRated: MovieListing;
+  userFav: any;
 };
 
 const Home: React.FC<HomeProps> = ({
@@ -23,7 +28,14 @@ const Home: React.FC<HomeProps> = ({
   nowPlaying,
   topRated,
   categories,
+  userFav,
 }) => {
+  const { favorites, handleFavorite, setFavorites } = useContext(UserContext);
+  useEffect(() => {
+    if (favorites && favorites.length > 0) {
+      setFavorites(userFav);
+    }
+  }, []);
   return (
     <main
       className={`flex min-h-screen flex-col justify-between ${inter.className} w-full`}
@@ -46,7 +58,8 @@ const Home: React.FC<HomeProps> = ({
 
 export default Home;
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { locale } = context;
   const options = {
     method: "GET",
     headers: {
@@ -60,6 +73,8 @@ export const getServerSideProps: GetServerSideProps = async () => {
   let categoriesObj;
   let categories;
   let topRated;
+  let userFav;
+
   try {
     const response = await fetch(
       "https://api.themoviedb.org/3/authentication",
@@ -97,9 +112,28 @@ export const getServerSideProps: GetServerSideProps = async () => {
     nowPlaying = createCategory(nowPlaying, categories);
     popular = createCategory(popular, categories);
     topRated = createCategory(topRated, categories);
+
+    const session = await getSession({ req: context.req });
+    if (!session) {
+      throw new Error("Vous devez être connecté.");
+    }
+
+    const favorites = await prisma.favorite.findMany({
+      where: { userId: session.user.id },
+    });
+    const movieDetailsRequests = favorites.map(async (fav) => {
+      const response = await fetch(
+        `https://api.themoviedb.org/3/movie/${fav.idMovie}?language=${locale}`,
+        options
+      );
+      const data = await response.json();
+      return data;
+    });
+
+    userFav = await Promise.all(movieDetailsRequests);
   } catch (error) {
     console.log(error);
   }
 
-  return { props: { nowPlaying, popular, topRated } };
+  return { props: { nowPlaying, popular, topRated, userFav } };
 };
