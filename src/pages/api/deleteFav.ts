@@ -9,12 +9,12 @@ export default async function handler(
 ) {
   let deletedFavorite;
   if (req.method === "DELETE") {
-    const { favoriteId, userId } = req.body; // L'ID du favori à supprimer
+    const { itemId, userId } = req.body;
     try {
       const favorite = await prisma.favorite.findFirst({
         where: {
           userId: userId,
-          idMovie: favoriteId,
+          idItem: itemId,
         },
       });
       if (favorite) {
@@ -24,7 +24,12 @@ export default async function handler(
           },
         });
       }
-      res.status(200).json(deletedFavorite);
+      const userFavorites = await prisma.favorite.findMany({
+        where: {
+          userId: userId,
+        },
+      });
+      return res.status(200).json(userFavorites);
     } catch (error) {
       console.error("Erreur lors de la suppression du favori:", error);
       res

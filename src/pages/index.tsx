@@ -20,7 +20,6 @@ type HomeProps = {
   categories: Categories[];
   popular: MovieListing;
   topRated: MovieListing;
-  userFav: any;
 };
 
 const Home: React.FC<HomeProps> = ({
@@ -28,14 +27,9 @@ const Home: React.FC<HomeProps> = ({
   nowPlaying,
   topRated,
   categories,
-  userFav,
 }) => {
   const { favorites, handleFavorite, setFavorites } = useContext(UserContext);
-  useEffect(() => {
-    if (favorites && favorites.length > 0) {
-      setFavorites(userFav);
-    }
-  }, []);
+
   return (
     <main
       className={`flex min-h-screen flex-col justify-between ${inter.className} w-full`}
@@ -113,27 +107,27 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     popular = createCategory(popular, categories);
     topRated = createCategory(topRated, categories);
 
-    const session = await getSession({ req: context.req });
-    if (!session) {
-      throw new Error("Vous devez être connecté.");
-    }
+    // const session = await getSession({ req: context.req });
+    // if (!session) {
+    //   throw new Error("Vous devez être connecté.");
+    // }
 
-    const favorites = await prisma.favorite.findMany({
-      where: { userId: session.user.id },
-    });
-    const movieDetailsRequests = favorites.map(async (fav) => {
-      const response = await fetch(
-        `https://api.themoviedb.org/3/movie/${fav.idMovie}?language=${locale}`,
-        options
-      );
-      const data = await response.json();
-      return data;
-    });
+    // const favorites = await prisma.favorite.findMany({
+    //   where: { userId: session.user.id },
+    // });
+    // const movieDetailsRequests = favorites.map(async (fav) => {
+    //   const response = await fetch(
+    //     `https://api.themoviedb.org/3/movie/${fav.idMovie}?language=${locale}`,
+    //     options
+    //   );
+    //   const data = await response.json();
+    //   return data;
+    // });
 
-    userFav = await Promise.all(movieDetailsRequests);
+    // userFav = await Promise.all(movieDetailsRequests);
   } catch (error) {
     console.log(error);
   }
 
-  return { props: { nowPlaying, popular, topRated, userFav } };
+  return { props: { nowPlaying, popular, topRated } };
 };

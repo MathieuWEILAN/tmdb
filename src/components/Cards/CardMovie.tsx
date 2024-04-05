@@ -4,11 +4,13 @@ import Rating from "../Rating";
 import LikeIcon from "@/assets/icons/LikeIcon";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useState, useContext, useEffect } from "react";
+import { UserContext } from "@/contexts/UserContext";
 const CardMovie: React.FC<{
   item: Movie | TVShow | PersonType;
   type: TypeOfObj;
-}> = ({ item, type }) => {
+  idItem: number;
+}> = ({ item, type, idItem }) => {
   const [isLiked, setIsLiked] = useState<boolean>(false);
 
   let title;
@@ -34,50 +36,11 @@ const CardMovie: React.FC<{
     picture = null;
     rating = undefined;
   }
-  const { data: session, status } = useSession();
-
-  const handleAddFavorite = async () => {
-    const response = await fetch("/api/addFav", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userId: session.user.id, // Assurez-vous que ceci correspond à l'ID de l'utilisateur connecté
-        movieId: item.id,
-        movieTitle: title,
-        movieType: type,
-      }),
-    });
-
-    if (response.ok) {
-      setIsLiked(true);
-      console.log("Film ajouté aux favoris");
-    } else {
-      console.error("Erreur", response.statusText);
-    }
-  };
-
-  const handleDeleteFavorite = async () => {
-    const response = await fetch("/api/deleteFav", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-
-      body: JSON.stringify({
-        userId: session.user.id,
-        movieId: item.id,
-      }),
-    });
-
-    if (response.ok) {
-      setIsLiked(false);
-      console.log("Film supprimé des favoris");
-    } else {
-      console.error("Erreur", response.statusText);
-    }
-  };
+  const { favorites, addFavorite, deleteFavorite } = useContext(UserContext);
+  useEffect(() => {
+    const find = favorites.find((fav) => fav.idItem === idItem);
+    setIsLiked(find ? true : false);
+  }, [favorites]);
 
   return (
     <Link
@@ -90,7 +53,11 @@ const CardMovie: React.FC<{
         className="absolute top-[10px] left-[10px]"
         item={item}
         isLiked={isLiked}
-        onClick={isLiked ? handleDeleteFavorite : handleAddFavorite}
+        onClick={
+          isLiked
+            ? (e: Event) => deleteFavorite(e, item, type, idItem)
+            : (e: Event) => addFavorite(e, item, type)
+        }
       />
       {picture ? (
         <Image

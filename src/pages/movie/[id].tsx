@@ -12,6 +12,7 @@ import { useSession } from "next-auth/react";
 import { PrismaClient } from "@prisma/client";
 import { getSession } from "next-auth/react";
 import prisma from "@/lib/prisma";
+import { UserContext } from "@/contexts/UserContext";
 
 import {
   CrewMember,
@@ -32,7 +33,7 @@ import { slugify, createCategory } from "@/lib/utils";
 import Media from "@/components/Medias";
 
 import SectionCategory from "@/components/SectionCategorie";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import Reviews from "@/components/Reviews";
 
@@ -70,9 +71,8 @@ const FilmPage: React.FC<FilmProps> = ({
 }) => {
   const { crew, cast } = credits;
   const [isModal, setIsModal] = useState<boolean>(false);
-  const [isLiked, setIsLiked] = useState<boolean>(false);
   const { locale } = useRouter();
-  const { data: session, status } = useSession();
+
   let providersResults;
   if (locale === "en-US") {
     providersResults = providers.results.US;
@@ -81,52 +81,7 @@ const FilmPage: React.FC<FilmProps> = ({
   } else if (locale === "es-ES") {
     providersResults = providers.results.ES;
   }
-  const handleAddFavorite = async () => {
-    const response = await fetch("/api/addFav", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userId: session.user.id, // Assurez-vous que ceci correspond à l'ID de l'utilisateur connecté
-        movieId: movieData.id,
-        movieTitle: movieData.title,
-        movieType: "movie",
-      }),
-    });
-
-    if (response.ok) {
-      setIsLiked(true);
-      console.log("Film ajouté aux favoris");
-    } else {
-      console.error("Erreur", response.statusText);
-    }
-  };
-
-  const handleDeleteFavorite = async () => {
-    const response = await fetch("/api/deleteFav", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-
-      body: JSON.stringify({
-        userId: session.user.id,
-        movieId: movieData.id,
-      }),
-    });
-
-    if (response.ok) {
-      setIsLiked(false);
-      console.log("Film supprimé des favoris");
-    } else {
-      console.error("Erreur", response.statusText);
-    }
-  };
-  useEffect(() => {
-    setIsLiked(isFavorite);
-  }, []);
-
+  console.log("PROVIDERS", providersResults, providers);
   return (
     <section className="flex flex-col h-auto w-full">
       <BannerPageMovie
@@ -140,23 +95,6 @@ const FilmPage: React.FC<FilmProps> = ({
       <div className="flex flex-col  lg:flex-row container mx-auto px-5">
         <div className="flex flex-col w-full lg:w-4/5 order-2 lg:order-1 lg:pr-5">
           <div className="my-10">
-            {status === "authenticated" && !isLiked && (
-              <button
-                onClick={handleAddFavorite}
-                className="bg-green-400 border-2 rounded-full p-5"
-              >
-                Add TO Favorites
-              </button>
-            )}
-
-            {status === "authenticated" && isLiked && (
-              <button
-                onClick={handleDeleteFavorite}
-                className="bg-red-400 border-2 rounded-full p-5"
-              >
-                Remove TO Favorites
-              </button>
-            )}
             <h2>Casting</h2>
             <div className="mx-auto w-full flex flex-nowrap overflow-auto no-scrollbar">
               {credits.cast.slice(0, 10).map((cast) => {
@@ -164,9 +102,9 @@ const FilmPage: React.FC<FilmProps> = ({
               })}
             </div>
           </div>
-          {/* {videos.results.length > 0 && (
+          {videos.results.length > 0 && (
             <Media videos={videos} images={images} />
-          )} */}
+          )}
 
           {similar?.results.length > 0 && <Similar similars={similar} />}
           {reviews.results.length > 0 && <Reviews {...reviews} />}
@@ -188,14 +126,27 @@ const FilmPage: React.FC<FilmProps> = ({
           <Keywords {...keywords} />
         </aside>
       </div>
-      <button
-        onClick={() => {
-          setIsModal(!isModal);
-        }}
-        className="z-50 fixed bottom-[40px] right-[40px] rounded-full py-2 px-4 bg-black text-white"
-      >
-        {wording(locale, "watch_film")}{" "}
-      </button>
+      {providersResults !== undefined && (
+        <button
+          onClick={() => {
+            setIsModal(!isModal);
+          }}
+          className="z-50 fixed bottom-[40px] right-[40px] rounded-full py-2 px-4 bg-black text-white"
+        >
+          {wording(locale, "watch_film")}
+        </button>
+      )}
+      {providersResults !== undefined && (
+        <button
+          onClick={() => {
+            setIsModal(!isModal);
+          }}
+          className="z-50 fixed bottom-[40px] right-[40px] rounded-full py-2 px-4 bg-black text-white"
+        >
+          {wording(locale, "watch_film")}{" "}
+        </button>
+      )}
+
       {isModal && (
         <ModalProviders setIsModal={setIsModal} providers={providersResults} />
       )}

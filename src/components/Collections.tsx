@@ -8,7 +8,14 @@ const Collections: React.FC<MovieCollection> = (collections) => {
       <p>{collections.overview}</p>
       <div className="w-full flex space-x-4">
         {collections.parts.map((item, i) => {
-          return <CardMovie key={item.id} item={item} type={TypeOfObj.MOVIE} />;
+          return (
+            <CardMovie
+              key={item.id}
+              item={item}
+              type={TypeOfObj.MOVIE}
+              idItem={item.id}
+            />
+          );
         })}
       </div>
     </div>

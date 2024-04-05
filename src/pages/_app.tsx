@@ -6,7 +6,6 @@ import { ThemeProvider } from "next-themes";
 import { AppContext, AppProvider } from "@/contexts/AppContext";
 import Header from "@/components/Header";
 import Navigation from "@/components/Navigation";
-import Modal from "@/components/Modal";
 import { useContext } from "react";
 import { UserProvider } from "@/contexts/UserContext";
 
@@ -20,7 +19,6 @@ const App = ({ Component, pageProps }: AppProps) => {
             <Header />
             <div className="md:pt-20 flex min-h-screen flex-col justify-between w-full">
               <Component {...pageProps} />
-              <Modal />
             </div>
           </UserProvider>
         </AppProvider>

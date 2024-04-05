@@ -10,7 +10,6 @@ const ModalProviders = ({
   providers: ProvidersListing;
   setIsModal: any;
 }) => {
-  console.log(providers);
   const { locale } = useRouter();
   return (
     <div className="banner w-screen h-screen z-[100] bg-stone-950 fixed top-0 bg-opacity-90 left-0">

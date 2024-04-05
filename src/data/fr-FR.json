@@ -11,6 +11,7 @@
   "rate": "note",
   "date": "date",
   "name": "nom",
+  "read_more": "Lire plus",
   "range_rating": "Filtrer par note",
   "categories": "Catégories",
   "range_years": "Filtrer par année",

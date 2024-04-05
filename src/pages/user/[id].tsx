@@ -1,39 +1,27 @@
 import { GetServerSideProps } from "next";
-import { PrismaClient } from "@prisma/client";
 import { getSession } from "next-auth/react";
-import SliderCategorie from "@/components/SliderCategorie";
 import { useRouter } from "next/router";
 import { wording } from "@/lib/utils";
 import prisma from "@/lib/prisma";
-import { signIn, signOut, useSession } from "next-auth/react";
-import {
-  TypeOfObj,
-  Movie,
-  TVShowDetails,
-  MovieDetails,
-  MovieListing,
-  ReviewsListing,
-  CastMemberListing,
-  ImagesListing,
-  VideosListing,
-  KeywordsType,
-} from "@/models/types";
-
-import { slugify, createCategory } from "@/lib/utils";
-
-import React from "react";
-import Image from "next/image";
+import CardMovie from "@/components/Cards/CardMovie";
+import { useSession } from "next-auth/react";
+import { MovieDetails, TypeOfObj } from "@/models/types";
+import { UserContext } from "@/contexts/UserContext";
+import React, { useContext, useEffect } from "react";
 
 type UserProps = {
   userFav: MovieDetails[];
 };
 const UserPage: React.FC<UserProps> = ({ userFav }) => {
   const { data: session, status } = useSession();
+  const { favorites } = useContext(UserContext);
   const { locale } = useRouter();
-
+  console.log("USER PAGE FAVORITES", favorites);
   if (status !== "authenticated") {
     return <div>Veuillez vous connecter</div>;
   }
+  useEffect(() => {}, [favorites]);
+
   return (
     <section className="flex flex-col h-auto w-full">
       <h1>
@@ -43,8 +31,15 @@ const UserPage: React.FC<UserProps> = ({ userFav }) => {
       <div>
         <h2>{wording(locale, "favorites")}</h2>
         <div className="w-full flex flex-wrap">
-          {userFav.map((item, i) => {
-            return <div key={item.id}>{item.title}</div>;
+          {favorites.map((item, i) => {
+            return (
+              <CardMovie
+                key={item.id}
+                item={item}
+                type={TypeOfObj.MOVIE}
+                idItem={item.idItem}
+              />
+            );
           })}
         </div>
       </div>
@@ -76,7 +71,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const movieDetailsRequests = favorites.map(async (fav) => {
       const response = await fetch(
-        `https://api.themoviedb.org/3/movie/${fav.idMovie}?language=${locale}`,
+        `https://api.themoviedb.org/3/movie/${fav.idItem}?language=${locale}`,
         options
       );
       const data = await response.json();

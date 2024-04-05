@@ -18,7 +18,6 @@ const TVShowgraphy = ({
   );
   const tvShowByDecade = groupByDecade(tvShows, TypeOfObj.TV);
   const sortedDecades = Object.keys(tvShowByDecade).sort((a, b) => b - a);
-  console.log("TVSHOWS", tvShows);
   return (
     <div className="w-full lg:w-1/2">
       <h2>{wording(locale, "tv_shows")}</h2>

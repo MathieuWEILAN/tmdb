@@ -12,19 +12,21 @@ datasource db {
 
 model Favorite {
   id           Int      @id @default(autoincrement())
-  idMovie      Int
+  idItem       Int
   title        String
   userId       String
   type         String
+  poster_path  String
   user         User @relation(fields: [userId], references: [id])
 }
 
 model ToWatch {
   id           Int      @id @default(autoincrement())
-  idMovie      Int
+  idItem       Int
   title        String
   userId       String
   type         String
+  poster_path  String
   user         User @relation(fields: [userId], references: [id])
 }
 

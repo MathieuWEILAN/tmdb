@@ -13,6 +13,7 @@ const LikeIcon = ({
   item: Movie | TVShow | PersonType;
   isLiked: boolean;
 }) => {
+  // const { favorites } = useContext(UserContext);
   return (
     <svg
       width="30px"
@@ -21,10 +22,8 @@ const LikeIcon = ({
       fill={isLiked ? "red" : "white"}
       xmlns="http://www.w3.org/2000/svg"
       className={`${className} ${
-        isLiked
-          ? "scale-105 transition-transform duration-700 ease-in-out"
-          : "scale-90"
-      } cursor-pointer`}
+        isLiked ? "scale-150 transition duration-500 ease-in-out" : "scale-90"
+      } cursor-pointer z-50`}
       onClick={onClick}
     >
       <path

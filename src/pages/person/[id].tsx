@@ -46,8 +46,6 @@ const PersonPage: React.FC<PersonProps> = ({
   const [isMore, setIsMore] = useState<boolean>(false);
 
   const { locale } = useRouter();
-  console.log("PERSON", personData);
-  console.log("CREDITS", credits);
   const type = personData.known_for_department;
 
   let bestFilms: Movie[] = [];
@@ -109,7 +107,7 @@ const PersonPage: React.FC<PersonProps> = ({
               onClick={() => setIsMore(!isMore)}
               className="hover:underline w-fit mt-2.5 self-end"
             >
-              Read more
+              {wording(locale, "read_more")}
             </button>
           </div>
         </div>
@@ -120,7 +118,12 @@ const PersonPage: React.FC<PersonProps> = ({
           <div className="flex overflow-auto no-scrollbar py-5 space-x-4">
             {bestFilms.map((item: Movie) => {
               return (
-                <CardMovie item={item} key={item.id} type={TypeOfObj.MOVIE} />
+                <CardMovie
+                  item={item}
+                  key={item.id}
+                  type={TypeOfObj.MOVIE}
+                  idItem={item.id}
+                />
               );
             })}
           </div>
@@ -140,7 +143,7 @@ const PersonPage: React.FC<PersonProps> = ({
             <TVShowgraphy tvShows={tv_credits.crew} type={type} />
           )}
         </div>
-        {images.profiles?.length > 0 && (
+        {images?.profiles?.length > 0 && (
           <Carousel arrayImages={images.profiles} />
         )}
       </div>

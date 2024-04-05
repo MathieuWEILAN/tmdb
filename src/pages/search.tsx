@@ -34,7 +34,14 @@ const SearchPage: React.FC<SearchProps> = ({ results, query }) => {
 
       <div className="flex flex-wrap w-full gap-5 justify-start">
         {resultsPage?.results.map((item: Movie | PersonType | TVShow) => {
-          return <CardMovie key={item.id} item={item} type={item.media_type} />;
+          return (
+            <CardMovie
+              key={item.id}
+              item={item}
+              type={item.media_type}
+              idItem={item.id}
+            />
+          );
         })}
       </div>
 

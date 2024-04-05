@@ -9,17 +9,34 @@ export default async function handler(
 ) {
   if (req.method === "POST") {
     {
-      const { userId, movieId, movieTitle, movieType } = req.body;
+      const { userId, itemId, itemTitle, itemType, itemImage } = req.body;
+      // CHECK IF ALREADY FAVORITES
       try {
-        const favorite = await prisma.favorite.create({
-          data: {
-            title: movieTitle,
-            idMovie: movieId,
-            userId: userId, // Cela doit être l'ID de l'utilisateur connecté
-            type: movieType,
+        const existingFavorite = await prisma.favorite.findFirst({
+          where: {
+            AND: [{ userId: userId }, { idItem: itemId }],
           },
         });
-        return res.status(200).json(favorite);
+        if (existingFavorite) {
+          return;
+        } else {
+          // IF NOT IN FAVORITES, ADD
+          const favorite = await prisma.favorite.create({
+            data: {
+              title: itemTitle,
+              idItem: itemId,
+              userId: userId,
+              type: itemType,
+              poster_path: itemImage,
+            },
+          });
+          const userFavorites = await prisma.favorite.findMany({
+            where: {
+              userId: userId,
+            },
+          });
+          return res.status(200).json(userFavorites);
+        }
       } catch (error) {
         console.error("Requête échouée:", error);
         return res

@@ -15,7 +15,6 @@ const Authentification = () => {
     signOut();
   };
   const { data: session, status } = useSession();
-  console.log(session);
   useEffect(() => {
     function handleClickOutside(event: any) {
       if (userRef.current && !userRef.current.contains(event.target)) {

@@ -36,7 +36,12 @@ const SliderCategorie = ({
             className={`flex flex-wrap shrink-0 flex-1 w-full justify-center lg:justify-start h-auto gap-4 lg:px-2.5 mt-10`}
           >
             {data?.map((film) => (
-              <CardMovie item={film} key={film.id} type={type} />
+              <CardMovie
+                item={film}
+                key={film.id}
+                type={type}
+                idItem={film.id}
+              />
             ))}
           </div>
 
