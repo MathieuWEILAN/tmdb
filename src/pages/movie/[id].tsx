@@ -29,7 +29,6 @@ import {
   SocialMediasType,
   MovieCollection,
 } from "@/models/types";
-import { slugify, createCategory } from "@/lib/utils";
 import Media from "@/components/Medias";
 
 import SectionCategory from "@/components/SectionCategorie";
@@ -81,7 +80,6 @@ const FilmPage: React.FC<FilmProps> = ({
   } else if (locale === "es-ES") {
     providersResults = providers.results.ES;
   }
-  console.log("PROVIDERS", providersResults, providers);
   return (
     <section className="flex flex-col h-auto w-full">
       <BannerPageMovie
@@ -131,19 +129,9 @@ const FilmPage: React.FC<FilmProps> = ({
           onClick={() => {
             setIsModal(!isModal);
           }}
-          className="z-50 fixed bottom-[40px] right-[40px] rounded-full py-2 px-4 bg-black text-white"
+          className="z-10 fixed bottom-[20px] right-[20px]  lg:bottom-[40px] lg:right-[40px] rounded-full py-2 px-4 bg-black text-white"
         >
           {wording(locale, "watch_film")}
-        </button>
-      )}
-      {providersResults !== undefined && (
-        <button
-          onClick={() => {
-            setIsModal(!isModal);
-          }}
-          className="z-50 fixed bottom-[40px] right-[40px] rounded-full py-2 px-4 bg-black text-white"
-        >
-          {wording(locale, "watch_film")}{" "}
         </button>
       )}
 
@@ -179,7 +167,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let keywords;
   let providers;
   let socials;
-  let movieCollection;
+  let movieCollection = null;
   let isFavorite = false;
   try {
     const response = await fetch(url, options);
@@ -239,14 +227,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     keywords = await response8.json();
     providers = await response9.json();
     socials = await response10.json();
-
-    // if (movieData?.belongs_to_collection) {
-    //   const response11 = await fetch(
-    //     `https://api.themoviedb.org/3/collection/${movieData.belongs_to_collection.id}?language=${locale}`,
-    //     options
-    //   );
-    //   movieCollection = await response11.json();
-    // }
+    console.log("MOVIE DATA", movieData);
+    if (movieData?.belongs_to_collection) {
+      console.log("COLLECTION", movieData.belongs_to_collection.id);
+      const response11 = await fetch(
+        `https://api.themoviedb.org/3/collection/${movieData.belongs_to_collection.id}?language=${locale}`,
+        options
+      );
+      movieCollection = await response11.json();
+    }
     const session = await getSession({ req: context.req });
     if (session) {
       const favorites = await prisma.favorite.findMany({
@@ -276,7 +265,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       keywords,
       providers,
       socials,
-      // movieCollection,
+      movieCollection,
       isFavorite,
     },
   };

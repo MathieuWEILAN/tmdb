@@ -17,18 +17,18 @@ export default async function handler(
         itemImage,
         itemDateRelease,
       } = req.body;
-      // CHECK IF ALREADY FAVORITES
+      // CHECK IF ALREADY TO WATCH
       try {
-        const existingFavorite = await prisma.favorite.findFirst({
+        const existingToWatch = await prisma.toWatch.findFirst({
           where: {
             AND: [{ userId: userId }, { idItem: itemId }],
           },
         });
-        if (existingFavorite) {
+        if (existingToWatch) {
           return;
         } else {
           // IF NOT IN FAVORITES, ADD
-          const favorite = await prisma.favorite.create({
+          const toWatch = await prisma.toWatch.create({
             data: {
               title: itemTitle,
               idItem: itemId,
@@ -38,12 +38,12 @@ export default async function handler(
               date_release: itemDateRelease,
             },
           });
-          const userFavorites = await prisma.favorite.findMany({
+          const userToWatch = await prisma.toWatch.findMany({
             where: {
               userId: userId,
             },
           });
-          return res.status(200).json(userFavorites);
+          return res.status(200).json(userToWatch);
         }
       } catch (error) {
         console.error("Requête échouée:", error);

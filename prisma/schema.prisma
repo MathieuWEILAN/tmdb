@@ -17,6 +17,7 @@ model Favorite {
   userId       String
   type         String
   poster_path  String
+  date_release String?
   user         User @relation(fields: [userId], references: [id])
 }
 
@@ -27,6 +28,7 @@ model ToWatch {
   userId       String
   type         String
   poster_path  String
+  date_release String?
   user         User @relation(fields: [userId], references: [id])
 }
 

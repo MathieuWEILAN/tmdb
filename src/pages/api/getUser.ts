@@ -14,7 +14,7 @@ export default async function handler(
       try {
         const user = await prisma.user.findUnique({
           where: { email: userEmail },
-          include: { favorites: true },
+          include: { favorites: true, toWatch: true },
         });
         res.status(200).json(user);
       } catch (error) {

@@ -1,48 +1,79 @@
 import { GetServerSideProps } from "next";
-import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { wording } from "@/lib/utils";
 import prisma from "@/lib/prisma";
 import CardMovie from "@/components/Cards/CardMovie";
-import { useSession } from "next-auth/react";
-import { MovieDetails, TypeOfObj } from "@/models/types";
+import { useSession, getSession, signIn } from "next-auth/react";
+import { MovieDetails, TVShowDetails, TypeOfObj } from "@/models/types";
 import { UserContext } from "@/contexts/UserContext";
 import React, { useContext, useEffect } from "react";
 
 type UserProps = {
-  userFav: MovieDetails[];
+  userFav: MovieDetails[] | TVShowDetails[];
+  userToWatch: MovieDetails[] | TVShowDetails[];
 };
-const UserPage: React.FC<UserProps> = ({ userFav }) => {
+const UserPage: React.FC<UserProps> = ({ userFav, userToWatch }) => {
   const { data: session, status } = useSession();
-  const { favorites } = useContext(UserContext);
+  const { favorites, toWatch } = useContext(UserContext);
   const { locale } = useRouter();
-  console.log("USER PAGE FAVORITES", favorites);
-  if (status !== "authenticated") {
-    return <div>Veuillez vous connecter</div>;
-  }
-  useEffect(() => {}, [favorites]);
+  const handleSignUp = async () => {
+    signIn();
+  };
 
+  if (status !== "authenticated") {
+    return (
+      <div className="container mx-auto flex items-center justify-center h-full w-full my-20">
+        <button
+          onClick={handleSignUp}
+          className="border p-4 rounded-xl box-shadow-2 hover:scale-105 transition-transform ease-in-out duration-300"
+        >
+          Veuillez vous connecter
+        </button>
+      </div>
+    );
+  }
   return (
-    <section className="flex flex-col h-auto w-full">
-      <h1>
-        {wording(locale, "welcome")}
+    <section className="flex flex-col h-auto w-full container mx-auto">
+      <h1 className="text-[42px] flex items-center my-10 justify-center space-x-4 font-bold">
+        {wording(locale, "welcome")}&nbsp;
         {session?.user?.name}
       </h1>
-      <div>
-        <h2>{wording(locale, "favorites")}</h2>
-        <div className="w-full flex flex-wrap">
-          {favorites.map((item, i) => {
-            return (
-              <CardMovie
-                key={item.id}
-                item={item}
-                type={TypeOfObj.MOVIE}
-                idItem={item.idItem}
-              />
-            );
-          })}
+      {/* favorites */}
+      {userFav.length > 0 && (
+        <div className="my-10">
+          <h2>{wording(locale, "favorites")}</h2>
+          <div className="w-full flex flex-wrap my-10 gap-4">
+            {favorites.map((item, i) => {
+              return (
+                <CardMovie
+                  key={item.id}
+                  item={item}
+                  type={TypeOfObj.MOVIE}
+                  idItem={item.idItem}
+                />
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
+      {/* to watch */}
+      {userToWatch.length > 0 && (
+        <div className="my-10">
+          <h2>{wording(locale, "favorites")} A VOIR</h2>
+          <div className="w-full flex flex-wrap my-10 gap-4">
+            {toWatch.map((item, i) => {
+              return (
+                <CardMovie
+                  key={`to-watch-${item.id}`}
+                  item={item}
+                  type={TypeOfObj.MOVIE}
+                  idItem={item.idItem}
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
     </section>
   );
 };
@@ -58,7 +89,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       Authorization: `Bearer ${process.env.TMDB_TOKEN}`,
     },
   };
-  let userFav;
+  let userFav = [];
+  let userToWatch = [];
   try {
     const session = await getSession({ req: context.req });
     if (!session) {
@@ -66,6 +98,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
 
     const favorites = await prisma.favorite.findMany({
+      where: { userId: session.user.id },
+    });
+    const toWatch = await prisma.toWatch.findMany({
       where: { userId: session.user.id },
     });
 
@@ -78,11 +113,21 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       return data;
     });
 
+    const movieDetailsRequestsToWatch = toWatch.map(async (fav) => {
+      const response = await fetch(
+        `https://api.themoviedb.org/3/movie/${fav.idItem}?language=${locale}`,
+        options
+      );
+      const data = await response.json();
+      return data;
+    });
+
     userFav = await Promise.all(movieDetailsRequests);
+    userToWatch = await Promise.all(movieDetailsRequestsToWatch);
   } catch (error) {
     console.log(error);
   }
   return {
-    props: { userFav },
+    props: { userFav, userToWatch },
   };
 };

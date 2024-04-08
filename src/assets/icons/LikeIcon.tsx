@@ -23,7 +23,7 @@ const LikeIcon = ({
       xmlns="http://www.w3.org/2000/svg"
       className={`${className} ${
         isLiked ? "scale-150 transition duration-500 ease-in-out" : "scale-90"
-      } cursor-pointer z-50`}
+      } cursor-pointer z-10`}
       onClick={onClick}
     >
       <path
